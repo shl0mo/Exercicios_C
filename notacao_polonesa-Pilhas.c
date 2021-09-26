@@ -78,92 +78,70 @@ int main(void) {
 	int quantidade_operacoes = 0;
 	pilha_invertida = inverte_pilha(pilha);
 	NOptr percorre_pilha = pilha_invertida->cabeca;
+	int j = 0;
 	while (percorre_pilha->prox != NULL) {
 		if (percorre_pilha->prox->prox != NULL) {
-			if (percorre_pilha->prox->prox->caractere[0] == '#') {
-				printf("ok 1");
+			if (percorre_pilha->prox->prox->caractere[0] == '#' || percorre_pilha->prox->caractere[0] == '#') {
 				float soma = 0;
-				printf("ok 2");
 				NOptr percorre_pilha_inicio = pilha_invertida->cabeca;
-				printf("ok 3");
 				soma = atof(percorre_pilha->caractere) + atof(percorre_pilha->prox->caractere);
-				printf("ok 4");
 				PILHAptr pilha_provisoria = inicializa_pilha();
-				printf("ok 5");
 				int j = 0;
-				printf("ok 6");
 				while (pilha_invertida->cabeca->caractere[0] != '#') {
-					printf("ok 7");
 					if (j == 0) {
 						insere_pilha(pilha_provisoria, pilha_invertida->cabeca->caractere);
 					}
 					remove_pilha(pilha_invertida);
-					printf("ok 8");
 					j++;
 				}
-				printf("ok 9");
-				remove_pilha(pilha_invertida);
-				printf("ok 10");
+				if (pilha_invertida->tamanho > 1) {
+					remove_pilha(pilha_invertida);	
+				}
 				char soma_string[30];
-				printf("ok 11");
 				sprintf(soma_string, "%g", soma);
-				printf("ok 12");
 				insere_pilha(pilha_invertida, soma_string);
-				printf("ok 13");
 				if (quantidade_operacoes > 0) {
-					printf("ok 14");
 					NOptr percorre_pilha_provisoria = pilha_provisoria->cabeca;
-					printf("ok 15");
 					while (percorre_pilha_provisoria->prox != NULL) {
-						printf("ok 16");
 						insere_pilha(pilha_invertida, percorre_pilha_provisoria->caractere);
-						printf("ok 17");
 						percorre_pilha_provisoria = percorre_pilha_provisoria->prox;
-						printf("ok 18");
 					}
-					printf("ok 19");
 				}
-				printf("ok 20");
 				if (pilha_invertida->tamanho == 1) {
-					printf("ok 21");
 					imprime_pilha(pilha_invertida, 0);
-					printf("ok 22");
 				}
-				printf("ok 23");
-				if (pilha_invertida->tamanho == 3) {
-					printf("ok 24");
-					char soma_final_string[30];
-					printf("ok 25");
-					float soma_final = 0;
-					printf("ok 26");
-					soma_final = atof(pilha_invertida->cabeca->caractere) + atof(pilha_invertida->cabeca->prox->caractere);
-					printf("ok 27");
-					sprintf(soma_final_string, "%g", soma_final);
-					printf("ok 28");
-					while (pilha_invertida->cabeca->caractere[0] != '#') {
-						printf("ok 29");
-						remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho == 2 && percorre_pilha->prox->prox->caractere[0] == '#') {
+					printf("%s", pilha_invertida->cabeca->caractere);
+				}
+				int tem_sinal = 0;
+				NOptr percorre_pilha_invertida = pilha_invertida->cabeca;
+				while (percorre_pilha_invertida->prox != NULL) {
+					if (percorre_pilha_invertida->caractere[0] == '#') {
+						tem_sinal = 1;
 					}
-					printf("\n\n AQUI!!! \n\n");
-					printf("ok 31");
-					remove_pilha(pilha_invertida);
-					printf("ok 32");
-					insere_pilha(pilha_invertida, soma_final_string);
-					printf("ok 33");
-					imprime_pilha(pilha_invertida, 0);
-					printf("ok 34");
-					break;
-					printf("ok 35");
-				} else {
-					printf("ok 36");
-					percorre_pilha = pilha_invertida->cabeca;
-					printf("ok 37");
+					percorre_pilha_invertida = percorre_pilha_invertida->prox;
 				}
-				printf("ok 38");
+				if (tem_sinal == 1) {
+					if (pilha_invertida->tamanho == 3) {
+						char soma_final_string[30];
+						float soma_final = 0;
+						soma_final = atof(pilha_invertida->cabeca->caractere) + atof(pilha_invertida->cabeca->prox->caractere);
+						sprintf(soma_final_string, "%g", soma_final);
+						while (pilha_invertida->cabeca->caractere[0] != '#') {
+							remove_pilha(pilha_invertida);
+						}
+						remove_pilha(pilha_invertida);
+						insere_pilha(pilha_invertida, soma_final_string);
+						imprime_pilha(pilha_invertida, 0);					
+						break;
+					} else {
+						percorre_pilha = pilha_invertida->cabeca;
+					}
+				} else {
+					percorre_pilha = pilha_invertida->cabeca;
+				}
 				quantidade_operacoes++;
-				printf("ok 39");
-			} else if (percorre_pilha->prox->prox->caractere[0] == '-') {
-				printf("Subtrair");
+			} else if (percorre_pilha->prox->prox->caractere[0] == '-' || percorre_pilha->prox->caractere[0] == '-') {
 				float subtracao = 0;
 				NOptr percorre_pilha_inicio = pilha_invertida->cabeca;
 				subtracao = atof(percorre_pilha->caractere) - atof(percorre_pilha->prox->caractere);
@@ -176,12 +154,14 @@ int main(void) {
 					remove_pilha(pilha_invertida);
 					j++;
 				}
-				remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho > 1) {
+					remove_pilha(pilha_invertida);	
+				}
 				char subtracao_string[30];
 				sprintf(subtracao_string, "%g", subtracao);
 				insere_pilha(pilha_invertida, subtracao_string);
-				if (quantidade_operacoes > 0) {					
-					NOptr percorre_pilha_provisoria = pilha_provisoria->cabeca;
+				if (quantidade_operacoes > 0) {
+					NOptr percorre_pilha_provisoria = pilha_provisoria->cabeca;					
 					while (percorre_pilha_provisoria->prox != NULL) {
 						insere_pilha(pilha_invertida, percorre_pilha_provisoria->caractere);
 						percorre_pilha_provisoria = percorre_pilha_provisoria->prox;
@@ -190,41 +170,61 @@ int main(void) {
 				if (pilha_invertida->tamanho == 1) {
 					imprime_pilha(pilha_invertida, 0);
 				}
-				if (pilha_invertida->tamanho == 3) {
-					char subtracao_final_string[30];
-					float subtracao_final = atof(pilha_invertida->cabeca->caractere) - atof(pilha_invertida->cabeca->prox->caractere);
-					sprintf(subtracao_final_string, "%g", subtracao_final);
-					while (pilha_invertida->cabeca->caractere[0] != '-') {
-						remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho == 2 && percorre_pilha->prox->prox->caractere[0] == '-') {
+					printf("%s", pilha_invertida->cabeca->caractere);
+				}
+				int tem_sinal = 0;
+				NOptr percorre_pilha_invertida = pilha_invertida->cabeca;
+				while (percorre_pilha_invertida) {
+					if (percorre_pilha_invertida->caractere[0] == '-') {
+						tem_sinal = 1;
 					}
-					remove_pilha(pilha_invertida);
-					insere_pilha(pilha_invertida, subtracao_final_string);
-					imprime_pilha(pilha_invertida, 0);
-					break;
+					percorre_pilha_invertida = percorre_pilha_invertida->prox;
+				}
+				if (tem_sinal == 1) {
+					if (pilha_invertida->tamanho == 3) {
+						char subtracao_final_string[30];
+						float subtracao_final = atof(pilha_invertida->cabeca->caractere) - atof(pilha_invertida->cabeca->prox->caractere);
+						sprintf(subtracao_final_string, "%g", subtracao_final);
+						while (pilha_invertida->cabeca->caractere[0] != '-') {
+							printf("%s", pilha_invertida->cabeca->caractere);
+							remove_pilha(pilha_invertida);
+						}
+						remove_pilha(pilha_invertida);
+						insere_pilha(pilha_invertida, subtracao_final_string);
+						imprime_pilha(pilha_invertida, 0);
+						break;
+					} else {
+						percorre_pilha = pilha_invertida->cabeca;
+					}	
 				} else {
 					percorre_pilha = pilha_invertida->cabeca;
 				}
 				quantidade_operacoes++;
-			} else if (percorre_pilha->prox->prox->caractere[0] == '*') {
-				float multiplicacao = 0;
+			} else if (percorre_pilha->prox->prox->caractere[0] == '*' || percorre_pilha->prox->caractere[0] == '*') {
+				float multiplicacao = 1;
 				NOptr percorre_pilha_inicio = pilha_invertida->cabeca;
 				multiplicacao = atof(percorre_pilha->caractere) * atof(percorre_pilha->prox->caractere);
 				PILHAptr pilha_provisoria = inicializa_pilha();
-				int j = 0;
-				while (pilha_invertida->cabeca->caractere[0] != '*') {
-					if (j == 0) {
-						insere_pilha(pilha_provisoria, pilha_invertida->cabeca->caractere);
-					}
-					remove_pilha(pilha_invertida);
-					j++;
+				NOptr percorre_pilha_invertida_1 = pilha_invertida->cabeca;
+				while (percorre_pilha_invertida_1->caractere[0] != '*') {
+					insere_pilha(pilha_provisoria, percorre_pilha_invertida_1->caractere);
+					percorre_pilha_invertida_1 = percorre_pilha_invertida_1->prox;
 				}
-				remove_pilha(pilha_invertida);
+				while (pilha_invertida->cabeca->caractere[0] != '*') {
+					remove_pilha(pilha_invertida);
+				}
+				if (pilha_invertida->tamanho > 1) {
+					remove_pilha(pilha_invertida);	
+				}
 				char multiplicacao_string[30];
 				sprintf(multiplicacao_string, "%g", multiplicacao);
-				insere_pilha(pilha_invertida, multiplicacao_string);
+				if (percorre_pilha->prox->prox->caractere[0] == '*') {
+					insere_pilha(pilha_invertida, multiplicacao_string);	
+				}
 				if (quantidade_operacoes > 0) {
 					NOptr percorre_pilha_provisoria = pilha_provisoria->cabeca;
-					while (percorre_pilha_provisoria->prox != NULL) {
+					while (percorre_pilha_provisoria) {
 						insere_pilha(pilha_invertida, percorre_pilha_provisoria->caractere);
 						percorre_pilha_provisoria = percorre_pilha_provisoria->prox;
 					}
@@ -232,27 +232,43 @@ int main(void) {
 				if (pilha_invertida->tamanho == 1) {
 					imprime_pilha(pilha_invertida, 0);
 				}
-				if (pilha_invertida->tamanho == 3) {
-					char multiplicacao_final_string[30];
-					float multiplicacao_final = atof(pilha_invertida->cabeca->caractere) * atof(pilha_invertida->cabeca->prox->caractere);
-					sprintf(multiplicacao_final_string, "%g", multiplicacao_final);
-					while (pilha_invertida->cabeca->caractere[0] != '*') {
-						remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho == 2 && percorre_pilha->prox->prox->caractere[0] == '*') {
+					printf("%s", pilha_invertida->cabeca->caractere);
+				}
+				int tem_sinal = 0;
+				NOptr percorre_pilha_invertida = pilha_invertida->cabeca;
+				while (percorre_pilha_invertida->prox != NULL) {
+					if (percorre_pilha_invertida->caractere[0] == '*') {
+						tem_sinal = 1;
 					}
-					remove_pilha(pilha_invertida);
-					insere_pilha(pilha_invertida, multiplicacao_final_string);
-					imprime_pilha(pilha_invertida, 0);
-					break;
+					percorre_pilha_invertida = percorre_pilha_invertida->prox;
+				}
+				if (tem_sinal == 1) {
+					if (pilha_invertida->tamanho == 4) {
+						char multiplicacao_final_string[30];
+						float multiplicacao_final = 0;
+						multiplicacao_final = atof(pilha_invertida->cabeca->prox->caractere) * atof(pilha_invertida->cabeca->prox->prox->caractere);
+						NOptr percorre_pilha_invertida = pilha_invertida->cabeca;
+						sprintf(multiplicacao_final_string, "%g", multiplicacao_final);
+						while (pilha_invertida->cabeca->caractere[0] != '*') {
+							remove_pilha(pilha_invertida);
+						}
+						remove_pilha(pilha_invertida);
+						insere_pilha(pilha_invertida, multiplicacao_final_string);
+						imprime_pilha(pilha_invertida, 0);
+						break;
+					} else {
+						percorre_pilha = pilha_invertida->cabeca;
+					}
 				} else {
 					percorre_pilha = pilha_invertida->cabeca;
 				}
 				quantidade_operacoes++;
-			} else if (percorre_pilha->prox->prox->caractere[0] == '/') {
+			} else if (percorre_pilha->prox->prox->caractere[0] == '/' || percorre_pilha->prox->caractere[0] == '/') {
 				float divisao = 1;
 				NOptr percorre_pilha_inicio = pilha_invertida->cabeca;
 				divisao = atof(percorre_pilha->caractere) / atof(percorre_pilha->prox->caractere);
 				PILHAptr pilha_provisoria = inicializa_pilha();
-				int j = 0;
 				while (pilha_invertida->cabeca->caractere[0] != '/') {
 					if (j == 0) {
 						insere_pilha(pilha_provisoria, pilha_invertida->cabeca->caractere);
@@ -260,7 +276,9 @@ int main(void) {
 					remove_pilha(pilha_invertida);
 					j++;
 				}
-				remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho > 1) {
+					remove_pilha(pilha_invertida);	
+				}
 				char divisao_string[30];
 				sprintf(divisao_string, "%g", divisao);
 				insere_pilha(pilha_invertida, divisao_string);
@@ -274,17 +292,34 @@ int main(void) {
 				if (pilha_invertida->tamanho == 1) {
 					imprime_pilha(pilha_invertida, 0);
 				}
-				if (pilha_invertida->tamanho == 3) {
-					char divisao_final_string[30];
-					float divisao_final = atof(pilha_invertida->cabeca->caractere) / atof(pilha_invertida->cabeca->prox->caractere);
-					sprintf(divisao_final_string, "%g", divisao_final);
-					while (pilha_invertida->cabeca->caractere[0] != '/') {
-						remove_pilha(pilha_invertida);
+				if (pilha_invertida->tamanho == 2 && percorre_pilha->prox->prox->caractere[0] == '/') {
+					printf("%s", pilha_invertida->cabeca->caractere);
+				}
+				int tem_sinal = 0;
+				NOptr percorre_pilha_invertida = pilha_invertida->cabeca;
+				while (percorre_pilha_invertida) {
+					if (percorre_pilha_invertida->caractere[0] == '/') {
+						tem_sinal = 1;
 					}
-					remove_pilha(pilha_invertida);
-					insere_pilha(pilha_invertida, divisao_final_string);
-					imprime_pilha(pilha_invertida, 0);
-					break;
+					percorre_pilha_invertida = percorre_pilha_invertida->prox;
+				}
+				if (tem_sinal == 1) {
+					if (pilha_invertida->tamanho == 3) {
+						char divisao_final_string[30];
+						float divisao_final = atof(pilha_invertida->cabeca->caractere) / atof(pilha_invertida->cabeca->prox->caractere);
+						printf("Divisao final: %f, %f", atof(pilha_invertida->cabeca->caractere), atof(pilha_invertida->cabeca->prox->caractere));
+						sprintf(divisao_final_string, "%g", divisao_final);
+						while (pilha_invertida->cabeca->caractere[0] != '/') {
+							remove_pilha(pilha_invertida);
+						}
+						remove_pilha(pilha_invertida);
+						insere_pilha(pilha_invertida, divisao_final_string);
+						printf("Imprimindo aqui\n");
+						imprime_pilha(pilha_invertida, 0);
+						break;
+					} else {
+						percorre_pilha = pilha_invertida->cabeca;
+					}
 				} else {
 					percorre_pilha = pilha_invertida->cabeca;
 				}
@@ -294,6 +329,5 @@ int main(void) {
 			//percorre_pilha = pilha_invertida->cabeca;
 		}
 		percorre_pilha = percorre_pilha->prox;
-		printf("Passou por aqui");
 	}
 }
