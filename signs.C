@@ -168,23 +168,27 @@ int main(void) {
 		if (verificacao == 0) {
 			insere_vetor(vetor_pilhas, pilha_verificacao, 0);
 		} else {
-			i = 0;
-			while (string[i] != '\0') {
-				if (string[i] == ')') {
-					desempilha_remove(pilha, '(');
-				} else if (string[i] == ']') {
-					desempilha_remove(pilha, '[');
-				} else if (string[i] == '}') {
-					desempilha_remove(pilha, '{');
+			if (pilha_verificacao->tamanho > 1) {
+				i = 0;
+				while (string[i] != '\0') {
+					if (string[i] == ')') {
+						desempilha_remove(pilha, '(');
+					} else if (string[i] == ']') {
+						desempilha_remove(pilha, '[');
+					} else if (string[i] == '}') {
+						desempilha_remove(pilha, '{');
+					}
+					if (pilha->tamanho == 0 && i != (tamanho_pilha - 1)) {
+						insere_vetor(vetor_pilhas, pilha_verificacao, 0);
+						break;
+					} else if (pilha->tamanho == 0 && i == (tamanho_pilha - 1)) {
+						insere_vetor(vetor_pilhas, pilha_verificacao, 1);
+						break;
+					}
+					i++;
 				}
-				if (pilha->tamanho == 0 && i != (tamanho_pilha - 1)) {
-					insere_vetor(vetor_pilhas, pilha_verificacao, 0);
-					break;
-				} else if (pilha->tamanho == 0 && i == (tamanho_pilha - 1)) {
-					insere_vetor(vetor_pilhas, pilha_verificacao, 1);
-					break;
-				}
-				i++;
+			} else {
+				insere_vetor(vetor_pilhas, pilha_verificacao, 0);
 			}
 		}
 	}
