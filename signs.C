@@ -141,11 +141,11 @@ int disposicao_caracteres(PILHAptr pilha) {
 }
 
 int main(void) {
-	PILHAptr pilha = inicializa_pilha();
-	PILHAptr pilha_invertida = inicializa_pilha();
-	PILHAptr pilha_verificacao = inicializa_pilha();
+	VETORptr vetor_pilhas = inicializa_vetor();
 	char string[50];
 	while (1) {
+		PILHAptr pilha = inicializa_pilha();
+		PILHAptr pilha_verificacao = inicializa_pilha();
 		scanf("%s", &string);
 		if (string[0] == '#' && string[1] == '#' && string[2] == '#') {
 			break;
@@ -164,65 +164,37 @@ int main(void) {
 			insere_pilha(pilha_verificacao, string[i]);
 			i++;
 		}
-		printf("\n");
-		imprime_pilha(pilha_verificacao->cabeca);
-		printf("\n");
 		int verificacao = disposicao_caracteres(pilha_verificacao);
-		printf("Verificacao: %i", verificacao);
-		return 0;
-		imprime_pilha(pilha->cabeca);
-		i = 0;
-		while (string[i] != '\0') {
-			if (string[i] == ')') {
-				desempilha_remove(pilha, '(');
-			} else if (string[i] == ']') {
-				desempilha_remove(pilha, '[');
-			} else if (string[i] == '}') {
-				desempilha_remove(pilha, '{');
+		if (verificacao == 0) {
+			insere_vetor(vetor_pilhas, pilha_verificacao, 0);
+		} else {
+			i = 0;
+			while (string[i] != '\0') {
+				if (string[i] == ')') {
+					desempilha_remove(pilha, '(');
+				} else if (string[i] == ']') {
+					desempilha_remove(pilha, '[');
+				} else if (string[i] == '}') {
+					desempilha_remove(pilha, '{');
+				}
+				if (pilha->tamanho == 0 && i != (tamanho_pilha - 1)) {
+					insere_vetor(vetor_pilhas, pilha_verificacao, 0);
+					break;
+				} else if (pilha->tamanho == 0 && i == (tamanho_pilha - 1)) {
+					insere_vetor(vetor_pilhas, pilha_verificacao, 1);
+					break;
+				}
+				i++;
 			}
-			if (pilha->tamanho == 0 && i != (tamanho_pilha - 1)) {
-				printf("\nNAo\n");
-				break;
-			} else if (pilha->tamanho == 0 && i == (tamanho_pilha - 1)) {
-				printf("\nSIM\n");
-			}
-			i++;
 		}
-		printf("Tamanho pilha: %i", pilha->tamanho);
 	}
-	//printf("\n");
-	/*NOptr percorre_pilha = pilha->cabeca;
-	while (pilha) {
-		/*if (percorre_pilha->caractere != ')' && percorre_pilha->caractere != ']' && percorre_pilha->caractere != '}') {
-			insere_pilha(pilha_invertida, percorre_pilha->caractere);
+	VETORptr percorre_vetor = vetor_pilhas->prox;
+	while (percorre_vetor) {
+		if (percorre_vetor->status == 1) {
+			printf("SIM\n");
+		} else {
+			printf("NAO\n");
 		}
-		printf("%c ", percorre_pilha->caractere);
-		if (percorre_pilha->caractere == ')') {
-			desempilha_remove(pilha, ')');
-			desempilha_remove(pilha, '(');
-		} else if (percorre_pilha->caractere == ']') {
-			desempilha_remove(pilha, ']');
-			desempilha_remove(pilha, '[');
-		} else if (percorre_pilha->caractere == '}') {
-			desempilha_remove(pilha, '}');
-			desempilha_remove(pilha, '{');
-		}
-		percorre_pilha = pilha->cabeca;
-	}*/
-	/*percorre_pilha = pilha->cabeca;
-	while (percorre_pilha) {
-		printf("\n");
-		imprime_pilha(pilha_invertida->cabeca);
-		if (pilha_invertida->tamanho > 0) {
-			if (percorre_pilha->caractere == ')') {
-				desempilha_remove(pilha_invertida, '(');
-			} else if (percorre_pilha->caractere == ']') {
-				desempilha_remove(pilha_invertida, '[');
-			} else if (percorre_pilha->caractere == '}') {
-				desempilha_remove(pilha_invertida, '{');
-			}	
-		}
-		percorre_pilha = percorre_pilha->prox;
-	}*/
-	//imprime_pilha(pilha->cabeca);
+		percorre_vetor = percorre_vetor->prox;
+	}
 }
