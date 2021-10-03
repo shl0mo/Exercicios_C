@@ -15,6 +15,32 @@ typedef struct pilha {
 
 typedef PILHA* PILHAptr;
 
+typedef struct vetor {
+	PILHAptr pilha;
+	int status;
+	struct vetor * prox;
+}VETOR;
+
+typedef VETOR* VETORptr;
+
+VETORptr inicializa_vetor() {
+	VETORptr novo_vetor = (VETORptr) malloc(sizeof(VETOR));
+	novo_vetor->prox = NULL;
+	return novo_vetor;
+}
+
+void insere_vetor(VETORptr vetor, PILHAptr pilha, int status) {
+	VETORptr percorre_vetor = vetor;
+	while (percorre_vetor->prox != NULL) {
+		percorre_vetor = percorre_vetor->prox;
+	}
+	VETORptr novo_elemento = (VETORptr) malloc(sizeof(VETOR));
+	novo_elemento->pilha = pilha;
+	novo_elemento->status = status;
+	novo_elemento->prox = NULL;
+	percorre_vetor->prox = novo_elemento;
+}
+
 PILHAptr inicializa_pilha () {
 	PILHAptr nova_pilha = (PILHAptr) malloc(sizeof(PILHAptr));
 	nova_pilha->tamanho = 0;
@@ -66,9 +92,58 @@ int imprime_pilha(NOptr no) {
 	imprime_pilha(no->prox);
 }
 
+int disposicao_caracteres(PILHAptr pilha) {
+	PILHAptr pilha_caracteres = inicializa_pilha();
+	VETORptr vetor_status = inicializa_vetor();
+	NOptr percorre_pilha = pilha->cabeca;
+	int status = 1;
+	while (percorre_pilha) {
+		char caractere;
+		if (percorre_pilha->caractere == ')' || percorre_pilha->caractere == ']' || percorre_pilha->caractere == '}') {
+			caractere = percorre_pilha->caractere;
+			insere_pilha(pilha_caracteres, caractere);
+		}
+		if (caractere == ')') {
+			if (percorre_pilha->caractere == '[' || percorre_pilha->caractere == '{') {
+				status = 0;
+				return status;
+			} else if (percorre_pilha->caractere == '(') {
+				remove_pilha(pilha_caracteres);
+				if (pilha_caracteres->tamanho > 0) {
+					caractere = pilha_caracteres->cabeca->caractere;	
+				}
+			}
+		} else if (caractere == ']') {
+			if (percorre_pilha->caractere == '(' || percorre_pilha->caractere == '{') {
+				imprime_pilha(pilha_caracteres->cabeca);
+				status = 0;
+				return status;
+			} else if (percorre_pilha->caractere == '[') {
+				remove_pilha(pilha_caracteres);
+				if (pilha_caracteres->tamanho > 0) {
+					caractere = pilha_caracteres->cabeca->caractere;	
+				}
+			}
+		} else if (caractere == '}') {
+			if (percorre_pilha->caractere == '(' || percorre_pilha->caractere == '[') {
+				status = 0;
+				return status;
+			} else if (percorre_pilha->caractere == '{') {
+				remove_pilha(pilha_caracteres);
+				if (pilha_caracteres->tamanho > 0) {
+					caractere = pilha_caracteres->cabeca->caractere;	
+				}
+			}
+		}
+		percorre_pilha = percorre_pilha->prox;
+	}
+	return status;
+}
+
 int main(void) {
 	PILHAptr pilha = inicializa_pilha();
 	PILHAptr pilha_invertida = inicializa_pilha();
+	PILHAptr pilha_verificacao = inicializa_pilha();
 	char string[50];
 	while (1) {
 		scanf("%s", &string);
@@ -84,6 +159,17 @@ int main(void) {
 			tamanho_pilha++;
 			i++;
 		}
+		i = 0;
+		while (string[i] != '\0') {
+			insere_pilha(pilha_verificacao, string[i]);
+			i++;
+		}
+		printf("\n");
+		imprime_pilha(pilha_verificacao->cabeca);
+		printf("\n");
+		int verificacao = disposicao_caracteres(pilha_verificacao);
+		printf("Verificacao: %i", verificacao);
+		return 0;
 		imprime_pilha(pilha->cabeca);
 		i = 0;
 		while (string[i] != '\0') {
