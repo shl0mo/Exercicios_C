@@ -80,7 +80,7 @@ int main(void) {
 	ARVORE_GENERICAptr arvore = inicializa_arvore(caractere[0]);
 	while (1) {
 		scanf("%s", &caractere);
-		if (caractere[0] == '#' && caractere[1] == '#') {
+		if (caractere[0] == '#') {
 			break;
 		}
 		ARVORE_GENERICAptr arvore_filha = inicializa_arvore(caractere[0]);
