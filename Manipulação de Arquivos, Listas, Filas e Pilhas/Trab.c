@@ -49,6 +49,7 @@ LISTAptr imprimir_lista (LISTAptr lista) {
 
 int main () {
 	FILE* arq = fopen("arquivo.txt", "r");
+	int escolha;
 	char vetor_null[100];
 	LISTAptr lista = inicializa_lista(vetor_null);
 	while (!feof(arq)) {
@@ -59,5 +60,27 @@ int main () {
 		}
 	}
 	imprimir_lista(lista);
-	//printf("Manipulação de arquivos, listas, filas e pilhas");
+	while (1) {
+		do {
+			printf("Escolha uma das opções abaixo: \n\n");
+			printf("1 - Inserção\n");
+			printf("2 - Busca\n");
+			printf("3 - Exclusão\n");
+			printf("4 - Relatório\n");
+			printf("5 - Sair\n");
+			scanf("%i", &escolha);
+		} while (escolha < 1 || escolha > 5);
+		if (escolha == 5) {
+			return 0;
+		}
+		if (escolha == 2) {
+			escolha = 0;
+			do {
+				printf("\nEscolha o tipo de busca: \n\n");
+				printf("1 - Busca por pilha\n");
+				printf("2 - Busca por fila\n");
+				scanf("%i", &escolha);
+			} while (escolha < 1 || escolha > 2);
+		}
+	}
 }
