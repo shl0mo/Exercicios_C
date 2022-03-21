@@ -11,7 +11,6 @@ typedef LISTA* LISTAptr;
 
 typedef struct pilha {
 	char info[100];
-	char placa[6];
 	struct pilha *prox;	
 }PILHA;
 
@@ -19,7 +18,6 @@ typedef PILHA* PILHAptr;
 
 typedef struct fila {
 	char info[100];
-	char placa[6];
 	struct fila *prox;
 }FILA;
 
@@ -45,29 +43,49 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 			}
 		}
 	}
-	printf("%s\n", nova_lista->placa);
 	nova_lista->prox = NULL;
 	return nova_lista;
 }
 
-LISTAptr inserir_lista (LISTAptr lista, char info[100]) {
+void inserir_lista (LISTAptr lista, char info[100]) {
 	LISTAptr p = lista;
-	int i, j, k, inseriu = 0;
-	char placa[6];
+	LISTAptr nova_lista = inicializa_lista(info, 1);
 	while (p->prox != NULL) {
-		/*if (placa[0] <= p->prox->placa[0]) {
-			LISTAptr nova_lista = inicializa_lista(info, 1);
+		if (nova_lista->placa[1] < p->prox->placa[1]) {
+			//inserção antes
 			nova_lista->prox = p->prox;
-			p->prox = nova_lista;	
-			inseriu = 1;
+			p->prox = nova_lista;
+			return;
+		} else if (nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] != p->prox->placa[2]) {
+			if (nova_lista->placa[2] < p->prox->placa[2]) {
+				//inserção antes
+				nova_lista->prox = p->prox;
+				p->prox = nova_lista;
+				return;
+			} else {
+				//inserção depois
+				nova_lista->prox = p->prox->prox;
+				p->prox->prox = nova_lista;
+				return;
+			}
+		} else if (nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2]) {		
+			printf("%c\n", p->placa[3]);
+			if (nova_lista->placa[3] < p->prox->placa[3]) {
+				//inserção antes
+				nova_lista->prox = p->prox;
+				p->prox = nova_lista;
+				return;
+			} else {
+				//inserção depois
+				nova_lista->prox = p->prox->prox;
+				p->prox->prox = nova_lista;
+				return;
+			}
 		}
-		printf("%s\n", placa);*/
-		p = p->prox;
+		p = p-> prox;
 	}
 	//if (inseriu == 0) {
-		LISTAptr nova_lista = inicializa_lista(info, 1);
-		printf("PLACA", nova_lista->placa);
-		p->prox = nova_lista;
+	p->prox = nova_lista;
 	//}
 }
 
@@ -82,7 +100,7 @@ void imprimir_lista_info (LISTAptr lista) {
 void imprimir_lista_placa (LISTAptr lista) {
 	LISTAptr p = lista->prox;
 	while (p != NULL) {
-		printf("placa: %s\n", p->placa);
+		printf("%s", p->placa);
 		p = p->prox;
 	}
 }
@@ -96,6 +114,9 @@ int main () {
 	LISTAptr lista = inicializa_lista(vetor_null, 0);
 	while (!feof(arq)) {
 		char linha[100];
+		/*for (i = 0; i < 100; i++) {
+			linha[i] = ' ';
+		}*/
 		fgets(linha, 100, arq);
 		if (linha[0] != '#' && linha[0] != ' ') {
 			inserir_lista(lista, linha);
