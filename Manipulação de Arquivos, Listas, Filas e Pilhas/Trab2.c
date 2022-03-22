@@ -133,16 +133,19 @@ void lista_excluidos (LISTAptr lista, LISTAptr excluidos, char placa[6]) {
 	}*/
 }
 
-LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {	
+LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
+	//imprimir_lista_info(excluidos);
 	char vetor_nulo[100];
 	LISTAptr nova_lista = inicializa_lista(vetor_nulo, 0);
+	LISTAptr p_excluidos = excluidos->prox;
+	printf("ok %s\n", excluidos->prox->placa);
 	LISTAptr p = lista->prox;
 	while (p) {
 		int excluido = 0;
-		LISTAptr p_excluidos = excluidos->prox;
+		p_excluidos = excluidos->prox;
 		while (p_excluidos) {
-			if (p_excluidos->placa[0] == p->placa[0] && p_excluidos->placa[1] == p->placa[1] && p_excluidos->placa[2] == p->placa[2] && p_excluidos->placa[3] == p->placa[3] && p_excluidos->placa[4] == p->placa[4] && p_excluidos->placa[5] == p->placa[5]) {
-				printf("Excluido: %s\n", p->placa);
+			if (!strcmp(p_excluidos->info, p->info)) {
+				//printf("ok %s\n", p_excluidos->info);
 				excluido = 1;
 			}
 			p_excluidos = p_excluidos->prox;
@@ -202,12 +205,12 @@ int main () {
 				scanf("%i", &escolha);
 			} while (escolha < 1 || escolha > 2);
 		} else if (escolha == 3) {
-			printf("Informe a placa do veículo que deseja excluir\n");
+			printf("Informe todos os dados do veículo que deseja excluir\n");
 			char placa[6];
 			scanf("%s", placa);
 			lista_excluidos(lista, excluidos, placa);
 			LISTAptr nova_lista = excluir(lista, excluidos);
-			//imprimir_lista_info(nova_lista);
+			imprimir_lista_info(nova_lista);
 			//imprimir_lista_info(nova_lista);
 			//printf("%s\n", placa);
 		}
