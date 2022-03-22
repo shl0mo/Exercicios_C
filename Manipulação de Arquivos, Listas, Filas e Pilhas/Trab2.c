@@ -189,6 +189,14 @@ void remover_pilha (PILHAptr pilha) {
 	p->prox = NULL;
 }
 
+void imprimir_pilha_info (PILHAptr pilha) {
+	PILHAptr p = pilha->prox;
+	while (p != NULL) {
+		printf("%s\n", p->info);
+		p = p->prox;
+	}
+}
+
 FILAptr inicializa_fila (char info[100], int insere) {
 	FILAptr nova_fila = (FILAptr) malloc(sizeof(FILA));
 	int i, j, k = 0;
@@ -228,6 +236,15 @@ void remover_fila (FILAptr fila) {
 		return;
 	}
 	p->prox = p->prox->prox;
+}
+
+
+void imprimir_fila_info (FILAptr fila) {
+	FILAptr p = fila->prox;
+	while (p != NULL) {
+		printf("%s\n", p->info);
+		p = p->prox;
+	}
 }
 
 LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pilha, FILAptr fila) {
@@ -305,13 +322,15 @@ int main () {
 				char dados[100];
 				scanf("%99[^\n]", dados);
 				inserir_pilha(pilha_busca, dados);
+				imprimir_pilha_info(pilha_busca);
 			} else { //Fila
 				char dados[100];
 				scanf("%99[^\n]", dados);
 				inserir_fila(fila_busca, dados);
+				imprimir_fila_info(fila_busca);
 			}
 		} else if (escolha == 4) {
-			printf("Relatório");
+			printf("Relatório\n");
 		}
 	}
 	//imprimir_lista_info(lista);
