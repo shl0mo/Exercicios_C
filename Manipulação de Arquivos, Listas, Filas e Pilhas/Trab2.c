@@ -12,6 +12,7 @@ typedef LISTA* LISTAptr;
 
 typedef struct pilha {
 	char info[100];
+	char placa[6];
 	struct pilha *prox;	
 }PILHA;
 
@@ -19,6 +20,7 @@ typedef PILHA* PILHAptr;
 
 typedef struct fila {
 	char info[100];
+	char placa[6];
 	struct fila *prox;
 }FILA;
 
@@ -143,14 +145,116 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 	return nova_lista;
 }
 
+PILHAptr inicializa_pilha (char info[100], int insere) {
+	PILHAptr nova_pilha = (PILHAptr) malloc(sizeof(PILHA));
+	int i, j, k = 0;
+	for (i = 0; i < 100; i++) {
+		nova_pilha->info[i] = info[i];
+	}
+	if (insere == 1) {
+		for (i = 0; i <= 100; i++) {
+			if (info[i] == ' ') {
+				j++;
+			}
+			if (j == 11) {
+				nova_pilha->placa[k] = info[i + 1];
+				k++;
+			}
+			if (info[i] == '\0') {
+				break;
+			}
+		}
+	}
+	nova_pilha->prox = NULL;
+	return nova_pilha;
+}
+
+void inserir_pilha (PILHAptr pilha, char info[100]) {
+	PILHAptr p = pilha;
+	while (p->prox != NULL) {
+		p = p->prox;
+	}
+	PILHAptr novo_no = inicializa_pilha(info, 1);
+	p->prox = novo_no;
+}
+
+void remover_pilha (PILHAptr pilha) {
+	PILHAptr p = pilha;
+	if (pilha->prox == NULL) {
+		return;
+	}
+	while (p->prox->prox != NULL) {
+		p = p->prox;
+	}
+	p->prox = NULL;
+}
+
+FILAptr inicializa_fila (char info[100], int insere) {
+	FILAptr nova_fila = (FILAptr) malloc(sizeof(FILA));
+	int i, j, k = 0;
+	for (i = 0; i < 100; i++) {
+		nova_fila->info[i] = info[i];
+	}
+	if (insere == 1) {
+		for (i = 0; i <= 100; i++) {
+			if (info[i] == ' ') {
+				j++;	
+			}
+			if (j == 11) {
+				nova_fila->placa[k] = info[i + 1];
+				k++;
+			}
+			if (info[i] == '\0') {
+				break;
+			}
+		}
+	}
+	nova_fila->prox = NULL;
+	return nova_fila;
+}
+
+void inserir_fila (FILAptr fila, char info[100]) {	
+	FILAptr p = fila;
+	while (p->prox != NULL) {
+		p = p->prox;
+	}
+	FILAptr novo_no = inicializa_fila(info, 1);
+	p->prox = novo_no;
+}
+
+void remover_fila (FILAptr fila) {
+	FILAptr p = fila;
+	if (p->prox == NULL) {
+		return;
+	}
+	p->prox = p->prox->prox;
+}
+
+LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pilha, FILAptr fila) {
+	LISTAptr p = lista->prox;
+	while (p) {
+		if (strcmp(p->info, info)) {
+			if (estrutura_busca == 1) {
+				inserir_pilha(pilha, info);
+			} else if (estrutura_busca == 2) {
+				inserir_fila(fila, info);
+			}
+			return p;
+		}
+		p = p->prox;
+	}
+	return NULL;
+}
+
 int main () {
-	printf("%i", strcmp("aba","ab"));
 	FILE* arq = fopen("arquivo.txt", "r");
 	int escolha, i;
 	char vetor_null[100], dados[100];
 	LISTAptr excluidos = inicializa_lista(vetor_null, 0);
 	LISTAptr lista_inicial = inicializa_lista(vetor_null, 0);
 	LISTAptr lista = inicializa_lista(vetor_null, 0);
+	PILHAptr pilha_busca = inicializa_pilha(vetor_null, 0);
+	FILAptr fila_busca = inicializa_fila(vetor_null, 0);
 	while (!feof(arq)) {
 		char linha[100];
 		fgets(linha, 100, arq);
@@ -180,6 +284,14 @@ int main () {
 			scanf(" %99[^\n]", dados);
 			inserir_lista(lista, dados);
 			inserir_lista(lista_inicial, dados);
+		} else if (escolha == 2) {
+			printf("Informe todos os dados do veículo que deseja excluir\n");
+			char placa[6];
+			scanf("%s", placa);
+			lista_excluidos(lista, excluidos, placa);
+			LISTAptr nova_lista = excluir(lista, excluidos);
+			lista_inicial = nova_lista;
+			imprimir_lista_info(lista_inicial);
 		} else if (escolha == 3) {
 			escolha = 0;
 			do {
@@ -189,19 +301,17 @@ int main () {
 				scanf("%i", &escolha);
 			} while (escolha < 1 || escolha > 2);
 			printf("Escolha todos os dados do veículo a ser buscado\n");
-			if (escolha == 1) {
-					
-			} else {
-					
+			if (escolha == 1) { //Pilha
+				char dados[100];
+				scanf("%99[^\n]", dados);
+				inserir_pilha(pilha_busca, dados);
+			} else { //Fila
+				char dados[100];
+				scanf("%99[^\n]", dados);
+				inserir_fila(fila_busca, dados);
 			}
-		} else if (escolha == 2) {
-			printf("Informe todos os dados do veículo que deseja excluir\n");
-			char placa[6];
-			scanf("%s", placa);
-			lista_excluidos(lista, excluidos, placa);
-			LISTAptr nova_lista = excluir(lista, excluidos);
-			lista_inicial = nova_lista;
-			imprimir_lista_info(lista_inicial);
+		} else if (escolha == 4) {
+			printf("Relatório");
 		}
 	}
 	//imprimir_lista_info(lista);
