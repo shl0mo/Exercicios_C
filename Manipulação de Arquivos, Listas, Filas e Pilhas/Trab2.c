@@ -250,7 +250,16 @@ void imprimir_fila_info (FILAptr fila) {
 LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pilha, FILAptr fila) {
 	LISTAptr p = lista->prox;
 	while (p) {
-		if (strcmp(p->info, info) == 0) {
+		int encontrou = 1;
+		int i = 0;
+		while (info[i] != '\0') {
+			if (p->info[i] != info[i]) {
+				encontrou = 0;
+				break;
+			}
+			i++;
+		}
+		if (encontrou == 1) {
 			if (estrutura_busca == 1) {
 				inserir_pilha(pilha, info);
 			} else if (estrutura_busca == 2) {
