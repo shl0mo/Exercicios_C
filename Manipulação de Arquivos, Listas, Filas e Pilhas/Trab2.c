@@ -250,7 +250,7 @@ void imprimir_fila_info (FILAptr fila) {
 LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pilha, FILAptr fila) {
 	LISTAptr p = lista->prox;
 	while (p) {
-		if (strcmp(p->info, info)) {
+		if (strcmp(p->info, info) == 0) {
 			if (estrutura_busca == 1) {
 				inserir_pilha(pilha, info);
 			} else if (estrutura_busca == 2) {
@@ -319,15 +319,27 @@ int main () {
 			} while (escolha < 1 || escolha > 2);
 			printf("Escolha todos os dados do veículo a ser buscado\n");
 			if (escolha == 1) { //Pilha
-				char dados[100];
-				scanf("%99[^\n]", dados);
-				inserir_pilha(pilha_busca, dados);
-				imprimir_pilha_info(pilha_busca);
+				char dados_busca[100];
+				scanf(" %99[^\n]", dados_busca);
+				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 1, pilha_busca, NULL);
+				if (resultado_busca != NULL) {
+					printf("\n");
+					imprimir_pilha_info(pilha_busca);
+					printf("\n");
+				} else {
+					printf("\nNenhum resultado encontrado\n\n");
+				}
 			} else { //Fila
-				char dados[100];
-				scanf("%99[^\n]", dados);
-				inserir_fila(fila_busca, dados);
-				imprimir_fila_info(fila_busca);
+				char dados_busca[100];
+				scanf(" %99[^\n]", dados_busca);
+				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 2, NULL, fila_busca);
+				if (resultado_busca != NULL) {
+					printf("\n");
+					imprimir_fila_info(fila_busca);
+					printf("\n");
+				} else {
+					printf("\nNenhum resultado encontrado\n\n");
+				}
 			}
 		} else if (escolha == 4) {
 			printf("Relatório\n");
