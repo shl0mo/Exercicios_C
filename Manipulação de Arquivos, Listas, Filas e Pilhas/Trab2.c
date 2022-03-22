@@ -165,6 +165,7 @@ int main () {
 	int escolha, i;
 	char vetor_null[100], dados[100];
 	LISTAptr excluidos = inicializa_lista(vetor_null, 0);
+	LISTAptr lista_inicial = inicializa_lista(vetor_null, 0);
 	LISTAptr lista = inicializa_lista(vetor_null, 0);
 	while (!feof(arq)) {
 		char linha[100];
@@ -174,6 +175,7 @@ int main () {
 		fgets(linha, 100, arq);
 		if (linha[0] != '#' && linha[0] != ' ') {
 			inserir_lista(lista, linha);
+			inserir_lista(lista_inicial, linha);
 		}
 	}
 	//imprimir_lista_info(lista);
@@ -196,6 +198,7 @@ int main () {
 			int i = 0;
 			scanf(" %99[^\n]", dados);
 			inserir_lista(lista, dados);
+			inserir_lista(lista_inicial, dados);
 		} else if (escolha == 2) {
 			escolha = 0;
 			do {
@@ -210,9 +213,8 @@ int main () {
 			scanf("%s", placa);
 			lista_excluidos(lista, excluidos, placa);
 			LISTAptr nova_lista = excluir(lista, excluidos);
-			imprimir_lista_info(nova_lista);
-			//imprimir_lista_info(nova_lista);
-			//printf("%s\n", placa);
+			lista_inicial = nova_lista;
+			imprimir_lista_info(lista_inicial);
 		}
 	}
 	//imprimir_lista_info(lista);
