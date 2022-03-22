@@ -11,16 +11,14 @@ typedef struct lista{
 typedef LISTA* LISTAptr;
 
 typedef struct pilha {
-	char info[100];
-	char placa[6];
+	LISTAptr lista;
 	struct pilha *prox;	
 }PILHA;
 
 typedef PILHA* PILHAptr;
 
 typedef struct fila {
-	char info[100];
-	char placa[6];
+	LISTAptr lista;
 	struct fila *prox;
 }FILA;
 
@@ -145,36 +143,19 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 	return nova_lista;
 }
 
-PILHAptr inicializa_pilha (char info[100], int insere) {
+PILHAptr inicializa_pilha (LISTAptr lista) {
 	PILHAptr nova_pilha = (PILHAptr) malloc(sizeof(PILHA));
-	int i, j, k = 0;
-	for (i = 0; i < 100; i++) {
-		nova_pilha->info[i] = info[i];
-	}
-	if (insere == 1) {
-		for (i = 0; i <= 100; i++) {
-			if (info[i] == ' ') {
-				j++;
-			}
-			if (j == 11) {
-				nova_pilha->placa[k] = info[i + 1];
-				k++;
-			}
-			if (info[i] == '\0') {
-				break;
-			}
-		}
-	}
+	nova_pilha->lista = lista;
 	nova_pilha->prox = NULL;
 	return nova_pilha;
 }
 
-void inserir_pilha (PILHAptr pilha, char info[100]) {
+void inserir_pilha (PILHAptr pilha, LISTAptr lista) {
 	PILHAptr p = pilha;
 	while (p->prox != NULL) {
 		p = p->prox;
 	}
-	PILHAptr novo_no = inicializa_pilha(info, 1);
+	PILHAptr novo_no = inicializa_pilha(lista);
 	p->prox = novo_no;
 }
 
@@ -192,41 +173,24 @@ void remover_pilha (PILHAptr pilha) {
 void imprimir_pilha_info (PILHAptr pilha) {
 	PILHAptr p = pilha->prox;
 	while (p != NULL) {
-		printf("%s\n", p->info);
+		printf("%s\n", p->lista->info);
 		p = p->prox;
 	}
 }
 
-FILAptr inicializa_fila (char info[100], int insere) {
+FILAptr inicializa_fila (LISTAptr lista) {
 	FILAptr nova_fila = (FILAptr) malloc(sizeof(FILA));
-	int i, j, k = 0;
-	for (i = 0; i < 100; i++) {
-		nova_fila->info[i] = info[i];
-	}
-	if (insere == 1) {
-		for (i = 0; i <= 100; i++) {
-			if (info[i] == ' ') {
-				j++;	
-			}
-			if (j == 11) {
-				nova_fila->placa[k] = info[i + 1];
-				k++;
-			}
-			if (info[i] == '\0') {
-				break;
-			}
-		}
-	}
+	nova_fila->lista = lista;
 	nova_fila->prox = NULL;
 	return nova_fila;
 }
 
-void inserir_fila (FILAptr fila, char info[100]) {	
+void inserir_fila (FILAptr fila, LISTAptr lista) {	
 	FILAptr p = fila;
 	while (p->prox != NULL) {
 		p = p->prox;
 	}
-	FILAptr novo_no = inicializa_fila(info, 1);
+		FILAptr novo_no = inicializa_fila(lista);
 	p->prox = novo_no;
 }
 
@@ -242,7 +206,7 @@ void remover_fila (FILAptr fila) {
 void imprimir_fila_info (FILAptr fila) {
 	FILAptr p = fila->prox;
 	while (p != NULL) {
-		printf("%s\n", p->info);
+		printf("%s\n", p->lista->info);
 		p = p->prox;
 	}
 }
@@ -261,9 +225,9 @@ LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pi
 		}
 		if (encontrou == 1) {
 			if (estrutura_busca == 1) {
-				inserir_pilha(pilha, info);
+				inserir_pilha(pilha, p);
 			} else if (estrutura_busca == 2) {
-				inserir_fila(fila, info);
+				inserir_fila(fila, p);
 			}
 			return p;
 		}
@@ -275,12 +239,13 @@ LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pi
 int main () {
 	FILE* arq = fopen("arquivo.txt", "r");
 	int escolha, i;
+	int tipo_estrutura = 0;
 	char vetor_null[100], dados[100];
 	LISTAptr excluidos = inicializa_lista(vetor_null, 0);
 	LISTAptr lista_inicial = inicializa_lista(vetor_null, 0);
 	LISTAptr lista = inicializa_lista(vetor_null, 0);
-	PILHAptr pilha_busca = inicializa_pilha(vetor_null, 0);
-	FILAptr fila_busca = inicializa_fila(vetor_null, 0);
+	PILHAptr pilha_busca = inicializa_pilha(NULL);
+	FILAptr fila_busca = inicializa_fila(NULL);
 	while (!feof(arq)) {
 		char linha[100];
 		fgets(linha, 100, arq);
@@ -319,15 +284,16 @@ int main () {
 			lista_inicial = nova_lista;
 			imprimir_lista_info(lista_inicial);
 		} else if (escolha == 3) {
-			escolha = 0;
-			do {
-				printf("\nEscolha o tipo de busca: \n\n");
-				printf("1 - Busca por pilha\n");
-				printf("2 - Busca por fila\n");
-				scanf("%i", &escolha);
-			} while (escolha < 1 || escolha > 2);
-			printf("Escolha todos os dados do veículo a ser buscado\n");
-			if (escolha == 1) { //Pilha
+			if (tipo_estrutura == 0) {
+				do {
+					printf("\nEscolha o tipo de busca: \n\n");
+					printf("1 - Busca por pilha\n");
+					printf("2 - Busca por fila\n");
+					scanf("%i", &tipo_estrutura);
+				} while (tipo_estrutura < 1 || tipo_estrutura > 2);
+			}
+			if (tipo_estrutura == 1) { //Pilha
+				printf("Escolha todos os dados do veículo a ser buscado (o tipo escolhido foi pilha - todas as buscas serão armazenadas em uma pilha)\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 1, pilha_busca, NULL);
@@ -339,6 +305,7 @@ int main () {
 					printf("\nNenhum resultado encontrado\n\n");
 				}
 			} else { //Fila
+				printf("Escolha todos os dados do veículo a ser buscado (o tipo escolhido foi fila - todas as buscas serão armazenadas em uma fila)\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 2, NULL, fila_busca);
