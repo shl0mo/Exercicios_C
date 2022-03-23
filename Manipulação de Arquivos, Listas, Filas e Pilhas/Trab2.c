@@ -52,48 +52,98 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 	return nova_lista;
 }
 
+LISTAptr no_insercao (LISTAptr lista, char placa[6], int indice) {
+	LISTAptr p = lista;
+	while (p->prox != NULL) {
+		if (p->prox->placa[0] == placa[0] && p->prox->placa[indice] < placa[indice]) {
+			return p;
+		}
+		p = p->prox;
+	}
+	return lista;
+}
+
 void inserir_lista (LISTAptr lista, char info[100]) {
 	LISTAptr p = lista;
 	LISTAptr nova_lista = inicializa_lista(info, 1);
 	while (p->prox != NULL) {
-		if (nova_lista->placa[0] < p->prox->placa[0]) {
-			//inserção antes
+		if (nova_lista->placa[0] < p->prox->placa[0]) { //inserção antes
 			nova_lista->prox = p->prox;
 			p->prox = nova_lista;
 			return;
 		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] != p->prox->placa[1]) {
-			if (nova_lista->placa[1] < p->prox->placa[1]) {
-				//inserção antes
+			if (nova_lista->placa[1] < p->prox->placa[1]) { //inserção antes
 				nova_lista->prox = p->prox;
 				p->prox = nova_lista;
 				return;
-			} else {
-				//inserção depois
+			} else { //inserção depois
 				nova_lista->prox = p->prox->prox;
 				p->prox->prox = nova_lista;
 				return;
 			}
-		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1]) {
-			if (nova_lista->placa[2] < p->prox->placa[2]) {
-				//inserção antes
+		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] != p->prox->placa[2]) {
+			printf("%s", no_insercao(lista, nova_lista->placa, 2)->placa);
+			if (nova_lista->placa[2] < p->prox->placa[2]) { //inserção antes
 				nova_lista->prox = p->prox;
 				p->prox = nova_lista;
 				return;
-			} else {
-				//inserção depois
+			} else { //inserção depois
 				nova_lista->prox = p->prox->prox;
 				p->prox->prox = nova_lista;
 				return;
 			}
-		}
+		} /*else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] != p->prox->placa[3]) {
+			printf("caso 1");
+			if (nova_lista->placa[3] < p->prox->placa[3]) { //inserção antes
+				nova_lista->prox = p->prox;
+				p->prox = nova_lista;
+				return;
+			} else { //inserção depois
+				nova_lista->prox = p->prox->prox;
+				p->prox->prox = nova_lista;
+				return;
+			}
+		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] == p->prox->placa[3] && nova_lista->placa[4] != p->prox->placa[4]) {
+			printf("caso 2");
+			if (nova_lista->placa[4] < p->prox->placa[4]) { //inserção antes
+				nova_lista->prox = p->prox;
+				p->prox = nova_lista;
+				return;
+			} else { //inserção depois
+				nova_lista->prox = p->prox->prox;
+				p->prox->prox = nova_lista;
+				return;
+			}
+		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] == p->prox->placa[3] && nova_lista->placa[4] == p->prox->placa[4] && nova_lista->placa[5] != p->prox->placa[5]) {
+			printf("caso 3");
+			if (nova_lista->placa[5] < p->prox->placa[5]) { //inserção antes
+				nova_lista->prox = p->prox;
+				p->prox = nova_lista;
+				return;
+			} else { //inserção depois
+				nova_lista->prox = p->prox->prox;
+				p->prox->prox = nova_lista;
+				return;
+			}
+		}*/
 		p = p-> prox;
 	}
 	p->prox = nova_lista;
 }
 
+int tamanho_lista (LISTAptr lista) {
+	LISTAptr p = lista->prox;
+	int tamanho_lista = 0;
+	while (p) {
+		tamanho_lista++;
+		p = p->prox;
+	}
+	return tamanho_lista;
+}
+
 void imprimir_lista_info (LISTAptr lista) {
 	LISTAptr p = lista->prox;
-	while (p != NULL) {
+	while (p) {
 		printf("%s\n", p->info);
 		p = p->prox;
 	}
@@ -144,20 +194,6 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 			inserir_lista(nova_lista, linha);
 		}
 	}
-	/*while (p) {
-		int excluido = 0;
-		p_excluidos = excluidos->prox;
-		while (p_excluidos) {
-			if (!strcmp(p_excluidos->info, p->info)) {
-				excluido = 1;
-			}
-			p_excluidos = p_excluidos->prox;
-		}
-		if (!excluido) {
-			inserir_lista(nova_lista, p->info);
-		}
-		p = p->prox;
-	}*/
 	return nova_lista;
 }
 
@@ -256,7 +292,8 @@ LISTAptr busca (LISTAptr lista, char info[100], int estrutura_busca, PILHAptr pi
 
 int main () {
 	FILE* arq = fopen("arquivo.txt", "r");
-	int escolha, i;
+	int escolha = 0;
+	int i = 0;
 	int tipo_estrutura = 0;
 	char vetor_null[100], dados[100];
 	LISTAptr excluidos = inicializa_lista(vetor_null, 0);
@@ -266,8 +303,15 @@ int main () {
 	FILAptr fila_busca = inicializa_fila(NULL);
 	while (!feof(arq)) {
 		char linha[100];
+		char linha_anterior[100];
+		for (i = 0; i < 100; i++) {
+			linha_anterior[i] = linha[i];	
+		}
 		fgets(linha, 100, arq);
-		if (linha[0] != '#' && linha[0] != ' ') {
+		if (!strcmp(linha_anterior, linha)) {
+			break;
+		}
+		if (linha[0] != '#' && linha[0] != ' ' && linha[0] != '\n') {
 			inserir_lista(lista_inicial, linha);
 			inserir_lista(lista, linha);
 		}
@@ -305,9 +349,6 @@ int main () {
 			}
 			LISTAptr nova_lista = excluir(lista, excluidos);
 			lista_inicial = nova_lista;
-			/*inserir_lista(lista_inicial, dados, 1);
-			inserir_lista(lista, dados, 0);
-			imprimir_lista_info(lista_inicial);*/
 		} else if (escolha == 2) {
 			printf("Informe a placa do veículo que deseja excluir:\n");
 			char placa[6];
@@ -352,6 +393,7 @@ int main () {
 			}
 		} else if (escolha == 4) {
 			imprimir_lista_info(lista_inicial);
+			printf("%i\n", tamanho_lista(lista_inicial));
 		}
 	}
 }
