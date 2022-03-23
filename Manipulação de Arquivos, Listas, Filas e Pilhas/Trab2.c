@@ -52,7 +52,7 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 	return nova_lista;
 }
 
-void inserir_lista (LISTAptr lista, char info[100], int teste) {
+void inserir_lista (LISTAptr lista, char info[100]) {
 	LISTAptr p = lista;
 	LISTAptr nova_lista = inicializa_lista(info, 1);
 	while (p->prox != NULL) {
@@ -73,7 +73,7 @@ void inserir_lista (LISTAptr lista, char info[100], int teste) {
 				p->prox->prox = nova_lista;
 				return;
 			}
-		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1]) {	
+		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1]) {
 			if (nova_lista->placa[2] < p->prox->placa[2]) {
 				//inserção antes
 				nova_lista->prox = p->prox;
@@ -116,7 +116,7 @@ void lista_excluidos (LISTAptr lista, LISTAptr excluidos, char placa[6]) {
 	while (p != NULL) {
 		int a = strcmp(p->placa, placa);
 		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] == placa[2] && p->placa[3] == placa[3] && p->placa[4] == placa[4] && p->placa[5] == placa[5]) {
-			inserir_lista(excluidos, p->info, 0);
+			inserir_lista(excluidos, p->info);
 		}
 		p = p->prox;
 	}
@@ -126,8 +126,8 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 	char vetor_nulo[100];
 	LISTAptr nova_lista = inicializa_lista(vetor_nulo, 0);
 	LISTAptr p_excluidos = excluidos->prox;
-	printf("ok %s\n", excluidos->prox->placa);
 	LISTAptr p = lista->prox;
+	FILE *arq = 
 	while (p) {
 		int excluido = 0;
 		p_excluidos = excluidos->prox;
@@ -138,7 +138,7 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 			p_excluidos = p_excluidos->prox;
 		}
 		if (!excluido) {
-			inserir_lista(nova_lista, p->info, 0);
+			inserir_lista(nova_lista, p->info);
 		}
 		p = p->prox;
 	}
@@ -252,8 +252,8 @@ int main () {
 		char linha[100];
 		fgets(linha, 100, arq);
 		if (linha[0] != '#' && linha[0] != ' ') {
-			inserir_lista(lista_inicial, linha, 0);
-			inserir_lista(lista, linha, 0);
+			inserir_lista(lista_inicial, linha);
+			inserir_lista(lista, linha);
 		}
 	}
 	while (1) {
@@ -264,7 +264,6 @@ int main () {
 			printf("3 - Busca\n");
 			printf("4 - Relatório\n");
 			printf("5 - Sair\n");
-			printf("6 - Imprimir lista\n");
 			scanf("%i", &escolha);
 		} while (escolha < 1 || escolha > 6);
 		if (escolha == 5) {
@@ -274,9 +273,25 @@ int main () {
 			printf("Informe os dados a serem inseridos:\n");
 			char dados[100];
 			scanf(" %99[^\n]", dados);
-			inserir_lista(lista_inicial, dados, 1);
+			FILE* arquivo = fopen("arquivo.txt", "a");
+			fprintf(arquivo, "%s\n", dados);
+			fclose(arquivo);
+			lista_inicial = inicializa_lista(vetor_null, 0);
+			lista = inicializa_lista(vetor_null, 0);
+			rewind(arq);
+			while (!feof(arq)) {
+				char linha[100];
+				fgets(linha, 100, arq);
+				if (linha[0] != '#' && linha[0] != ' ') {
+					inserir_lista(lista_inicial, linha);
+					inserir_lista(lista, linha);
+				}
+			}
+			LISTAptr nova_lista = excluir(lista, excluidos);
+			lista_inicial = nova_lista;
+			/*inserir_lista(lista_inicial, dados, 1);
 			inserir_lista(lista, dados, 0);
-			imprimir_lista_info(lista_inicial);
+			imprimir_lista_info(lista_inicial);*/
 		} else if (escolha == 2) {
 			printf("Informe a placa do veículo que deseja excluir:\n");
 			char placa[6];
