@@ -242,6 +242,7 @@ void lista_excluidos (LISTAptr lista, LISTAptr excluidos, char placa[6]) {
 }
 
 LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
+	int i = 0;
 	char vetor_nulo[100];
 	LISTAptr nova_lista = inicializa_lista(vetor_nulo, 0);
 	LISTAptr p_excluidos = excluidos->prox;
@@ -250,7 +251,6 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 	rewind(arq);
 	while (!feof(arq)) {
 		char linha[100];
-		int i = 0;
 		char linha_anterior[100];
 		for (i = 0; i < 100; i++) {
 			linha_anterior[i] = linha[i];	
@@ -259,7 +259,6 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 		if (!strcmp(linha_anterior, linha)) {
 			break;
 		}
-		fgets(linha, 100, arq);
 		int excluido = 0;
 		p_excluidos = excluidos->prox;
 		while (p_excluidos) {
@@ -268,7 +267,7 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 			}
 			p_excluidos = p_excluidos->prox;
 		}
-		if (!excluido && linha[0] != '#' && linha[0] != ' ') {
+		if (!excluido && linha[0] != '#' && linha[0] != ' ' && linha[0] != '\n') {
 			inserir_lista(nova_lista, linha);
 		}
 	}
@@ -428,7 +427,7 @@ int main () {
 					break;
 				}
 				fgets(linha, 100, arq);
-				if (linha[0] != '#' && linha[0] != ' ') {
+				if (linha[0] != '#' && linha[0] != ' ' && linha[0] == '\n') {
 					inserir_lista(lista_inicial, linha);
 					inserir_lista(lista, linha);
 				}
@@ -443,6 +442,7 @@ int main () {
 			LISTAptr nova_lista = excluir(lista, excluidos);
 			lista_inicial = nova_lista;
 			imprimir_lista_info(lista_inicial);
+			printf("%i", tamanho_lista(nova_lista));
 		} else if (escolha == 3) {
 			if (tipo_estrutura == 0) {
 				do {
@@ -479,7 +479,7 @@ int main () {
 			}
 		} else if (escolha == 4) {
 			imprimir_lista_info(lista_inicial);
-			//printf("%i\n", tamanho_lista(lista_inicial));
+			printf("%i\n", tamanho_lista(lista_inicial));
 		}
 	}
 }
