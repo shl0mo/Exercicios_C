@@ -127,8 +127,24 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 	LISTAptr nova_lista = inicializa_lista(vetor_nulo, 0);
 	LISTAptr p_excluidos = excluidos->prox;
 	LISTAptr p = lista->prox;
-	FILE *arq = 
-	while (p) {
+	FILE *arq = fopen("arquivo.txt", "r");
+	rewind(arq);
+	while (!feof(arq)) {
+		char linha[100];
+		fgets(linha, 100, arq);
+		int excluido = 0;
+		p_excluidos = excluidos->prox;
+		while (p_excluidos) {
+			if (!strcmp(p_excluidos->info, linha)) {
+				excluido = 1;
+			}
+			p_excluidos = p_excluidos->prox;
+		}
+		if (!excluido && linha[0] != '#' && linha[0] != ' ') {
+			inserir_lista(nova_lista, linha);
+		}
+	}
+	/*while (p) {
 		int excluido = 0;
 		p_excluidos = excluidos->prox;
 		while (p_excluidos) {
@@ -141,7 +157,7 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 			inserir_lista(nova_lista, p->info);
 		}
 		p = p->prox;
-	}
+	}*/
 	return nova_lista;
 }
 
