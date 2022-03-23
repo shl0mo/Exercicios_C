@@ -32,6 +32,8 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 	for (i = 0; i < 100; i++) {
 		nova_lista->info[i] = info[i];
 	}
+	j = 0;
+	k = 0;
 	if (insere == 1) {
 		for (i = 0; i <= 100; i++) {
 			if (info[i] == ' ') {
@@ -50,7 +52,7 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 	return nova_lista;
 }
 
-void inserir_lista (LISTAptr lista, char info[100]) {
+void inserir_lista (LISTAptr lista, char info[100], int teste) {
 	LISTAptr p = lista;
 	LISTAptr nova_lista = inicializa_lista(info, 1);
 	while (p->prox != NULL) {
@@ -114,7 +116,7 @@ void lista_excluidos (LISTAptr lista, LISTAptr excluidos, char placa[6]) {
 	while (p != NULL) {
 		int a = strcmp(p->placa, placa);
 		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] == placa[2] && p->placa[3] == placa[3] && p->placa[4] == placa[4] && p->placa[5] == placa[5]) {
-			inserir_lista(excluidos, p->info);
+			inserir_lista(excluidos, p->info, 0);
 		}
 		p = p->prox;
 	}
@@ -136,7 +138,7 @@ LISTAptr excluir (LISTAptr lista, LISTAptr excluidos) {
 			p_excluidos = p_excluidos->prox;
 		}
 		if (!excluido) {
-			inserir_lista(nova_lista, p->info);
+			inserir_lista(nova_lista, p->info, 0);
 		}
 		p = p->prox;
 	}
@@ -250,33 +252,33 @@ int main () {
 		char linha[100];
 		fgets(linha, 100, arq);
 		if (linha[0] != '#' && linha[0] != ' ') {
-			inserir_lista(lista, linha);
-			inserir_lista(lista_inicial, linha);
+			inserir_lista(lista_inicial, linha, 0);
+			inserir_lista(lista, linha, 0);
 		}
 	}
-	//imprimir_lista_info(lista);
 	while (1) {
 		do {
-			printf("Escolha uma das opções abaixo: \n\n");
+			printf("\nEscolha uma das opções abaixo: \n\n");
 			printf("1 - Inserção\n");
 			printf("2 - Exclusão\n");
 			printf("3 - Busca\n");
 			printf("4 - Relatório\n");
 			printf("5 - Sair\n");
+			printf("6 - Imprimir lista\n");
 			scanf("%i", &escolha);
-		} while (escolha < 1 || escolha > 5);
+		} while (escolha < 1 || escolha > 6);
 		if (escolha == 5) {
-			break;
+			return 0;
 		}
 		if (escolha == 1) {
-			printf("Informe os dados a serem inseridos\n");
+			printf("Informe os dados a serem inseridos:\n");
 			char dados[100];
-			int i = 0;
 			scanf(" %99[^\n]", dados);
-			inserir_lista(lista, dados);
-			inserir_lista(lista_inicial, dados);
+			inserir_lista(lista_inicial, dados, 1);
+			inserir_lista(lista, dados, 0);
+			imprimir_lista_info(lista_inicial);
 		} else if (escolha == 2) {
-			printf("Informe todos os dados do veículo que deseja excluir\n");
+			printf("Informe a placa do veículo que deseja excluir:\n");
 			char placa[6];
 			scanf("%s", placa);
 			lista_excluidos(lista, excluidos, placa);
@@ -293,7 +295,7 @@ int main () {
 				} while (tipo_estrutura < 1 || tipo_estrutura > 2);
 			}
 			if (tipo_estrutura == 1) { //Pilha
-				printf("Escolha todos os dados do veículo a ser buscado (o tipo escolhido foi pilha - todas as buscas serão armazenadas em uma pilha)\n");
+				printf("Informe todos os dados do veículo a ser buscado (o tipo escolhido foi pilha - todas as buscas serão armazenadas em uma pilha):\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 1, pilha_busca, NULL);
@@ -305,7 +307,7 @@ int main () {
 					printf("\nNenhum resultado encontrado\n\n");
 				}
 			} else { //Fila
-				printf("Escolha todos os dados do veículo a ser buscado (o tipo escolhido foi fila - todas as buscas serão armazenadas em uma fila)\n");
+				printf("Informe todos os dados do veículo a ser buscado (o tipo escolhido foi fila - todas as buscas serão armazenadas em uma fila):\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 2, NULL, fila_busca);
@@ -318,8 +320,7 @@ int main () {
 				}
 			}
 		} else if (escolha == 4) {
-			printf("Relatório\n");
+			imprimir_lista_info(lista_inicial);
 		}
 	}
-	//imprimir_lista_info(lista);
 }
