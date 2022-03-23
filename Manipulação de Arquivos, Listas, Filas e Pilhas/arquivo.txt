@@ -30,5 +30,5 @@ FOX_CONNECT VOLKSWAGEN Hatch 2020 8000 1.6 Flex Manual Eletrica Branco 4 IQE4571
 STRADA_ENDURANCE FIAT Pick-up 2020 30000 1.4 Gasolina Manual Hidraulica Preto 2 MNA7449
 OLLA TOYOTA Seda 2015 100000 2.0 Flex Automatico Hidraulica Prata 4 OQC7488
 CIVIC HONDA Seda 2016 82000 1.8 Flex Automatico Hidraulica Branco 4 PAE2146
-CITY HONDA Sedan 2019 38000 1.5 Flex Automatico Hidraulica Prata 4 APX6545
 XC-60 VOLVO SUV 2015 97000 2.4 Gasolina Automatico Eletrica Preto 4 MAN7774
+CITY HONDA Sedan 2019 38000 1.5 Flex Automatico Hidraulica Prata 4 APX6545

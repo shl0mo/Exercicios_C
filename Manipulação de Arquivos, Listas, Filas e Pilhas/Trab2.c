@@ -52,15 +52,36 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 	return nova_lista;
 }
 
-LISTAptr no_insercao (LISTAptr lista, char placa[6], int indice) {
+
+LISTAptr no_insercao_1 (LISTAptr lista, char placa[6], int indice) {
 	LISTAptr p = lista;
-	while (p->prox != NULL) {
+	while (p->prox) {
 		if (p->prox->placa[0] == placa[0] && p->prox->placa[indice] < placa[indice]) {
+			return p->prox;
+		}
+		p = p->prox;
+	}
+	return lista;
+}
+
+LISTAptr no_insercao_2 (LISTAptr lista, char placa[6], int indice) {
+	LISTAptr p = lista;
+	while (p->prox) {
+		if (p->prox->placa[0] == placa[0] && p->prox->placa[1] == placa[1] && p->prox->placa[indice] < placa[indice]) {
 			return p;
 		}
 		p = p->prox;
 	}
 	return lista;
+}
+
+
+void imprimir_lista_info (LISTAptr lista) {
+	LISTAptr p = lista->prox;
+	while (p) {
+		printf("%s\n", p->info);
+		p = p->prox;
+	}
 }
 
 void inserir_lista (LISTAptr lista, char info[100]) {
@@ -70,28 +91,72 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 		if (nova_lista->placa[0] < p->prox->placa[0]) { //inserção antes
 			nova_lista->prox = p->prox;
 			p->prox = nova_lista;
+			//imprimir_lista_info(lista);
+			//printf("%s\n", nova_lista->placa);
 			return;
-		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] != p->prox->placa[1]) {
-			if (nova_lista->placa[1] < p->prox->placa[1]) { //inserção antes
-				nova_lista->prox = p->prox;
-				p->prox = nova_lista;
-				return;
-			} else { //inserção depois
-				nova_lista->prox = p->prox->prox;
-				p->prox->prox = nova_lista;
-				return;
+		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] != p->prox->placa[1]) { 
+			if (no_insercao_1(p->prox, nova_lista->placa, 1) == p->prox) {
+				if (nova_lista->placa[1] < p->prox->placa[1]) { //inserção antes
+					nova_lista->prox = p->prox;
+					p->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				} else { //inserção depois
+					nova_lista->prox = p->prox->prox;
+					p->prox->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				}
+			} else {
+				LISTAptr no_insercao = no_insercao_1(p->prox, nova_lista->placa, 1);
+				if (nova_lista->placa[1] < no_insercao->placa[1]) { //inserção antes
+					nova_lista->prox = no_insercao;
+					no_insercao = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				} else { //inserção depois
+					nova_lista->prox = no_insercao->prox;
+					no_insercao->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				}
 			}
 		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] != p->prox->placa[2]) {
-			printf("%s", no_insercao(lista, nova_lista->placa, 2)->placa);
-			if (nova_lista->placa[2] < p->prox->placa[2]) { //inserção antes
-				nova_lista->prox = p->prox;
-				p->prox = nova_lista;
-				return;
-			} else { //inserção depois
-				nova_lista->prox = p->prox->prox;
-				p->prox->prox = nova_lista;
-				return;
+			if (no_insercao_2(p->prox, nova_lista->placa, 2) == p->prox) {
+				if (nova_lista->placa[2] < p->prox->placa[2]) { //inserção antes
+					nova_lista->prox = p->prox;
+					p->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				} else { //inserção depois
+					nova_lista->prox = p->prox->prox;
+					p->prox->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				}
+			} else {
+				LISTAptr no_insercao = no_insercao_1(p->prox, nova_lista->placa, 2);
+				if (nova_lista->placa[2] < no_insercao->placa[2]) { //inserção antes
+					nova_lista->prox = no_insercao;
+					no_insercao = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				} else { //inserção depois
+					nova_lista->prox = no_insercao->prox;
+					no_insercao->prox = nova_lista;
+					//imprimir_lista_info(lista);
+					//printf("%s\n", nova_lista->placa);
+					return;
+				}
 			}
+
 		} /*else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] != p->prox->placa[3]) {
 			printf("caso 1");
 			if (nova_lista->placa[3] < p->prox->placa[3]) { //inserção antes
@@ -129,6 +194,8 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 		p = p-> prox;
 	}
 	p->prox = nova_lista;
+	//imprimir_lista_info(lista);
+	//printf("%s\n", nova_lista->placa);
 }
 
 int tamanho_lista (LISTAptr lista) {
@@ -139,14 +206,6 @@ int tamanho_lista (LISTAptr lista) {
 		p = p->prox;
 	}
 	return tamanho_lista;
-}
-
-void imprimir_lista_info (LISTAptr lista) {
-	LISTAptr p = lista->prox;
-	while (p) {
-		printf("%s\n", p->info);
-		p = p->prox;
-	}
 }
 
 void imprimir_lista_placa (LISTAptr lista) {
@@ -311,9 +370,9 @@ int main () {
 		if (!strcmp(linha_anterior, linha)) {
 			break;
 		}
-		if (linha[0] != '#' && linha[0] != ' ' && linha[0] != '\n') {
-			inserir_lista(lista_inicial, linha);
+		if (linha[0] != '#' && linha[0] != ' ' && linha[0] != '\n') {	
 			inserir_lista(lista, linha);
+			inserir_lista(lista_inicial, linha);
 		}
 	}
 	while (1) {
