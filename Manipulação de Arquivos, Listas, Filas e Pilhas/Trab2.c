@@ -58,6 +58,9 @@ LISTAptr no_insercao_1 (LISTAptr lista, char placa[6], int indice) {
 	while (p->prox) {
 		if (p->prox->placa[0] == placa[0] && p->placa[indice] <= placa[indice] && p->prox->placa[indice] > placa[indice]) {
 			return p;
+		} 
+		if (p->placa[0] == placa[0] && placa[indice] > p->placa[indice]) {
+			lista = p;
 		}
 		p = p->prox;
 	}
