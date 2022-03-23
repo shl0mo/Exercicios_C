@@ -56,8 +56,8 @@ LISTAptr inicializa_lista (char info[100], int insere) {
 LISTAptr no_insercao_1 (LISTAptr lista, char placa[6], int indice) {
 	LISTAptr p = lista;
 	while (p->prox) {
-		if (p->prox->placa[0] == placa[0] && p->prox->placa[indice] < placa[indice]) {
-			return p->prox;
+		if (p->prox->placa[0] == placa[0] && p->placa[indice] <= placa[indice] && p->prox->placa[indice] > placa[indice]) {
+			return p;
 		}
 		p = p->prox;
 	}
@@ -84,9 +84,28 @@ void imprimir_lista_info (LISTAptr lista) {
 	}
 }
 
+int define_tipo_insercao (LISTAptr lista, char placa[6]) {
+	int tipo_insercao = 0;
+	LISTAptr p = lista->prox;
+       	while (p) {
+		if (placa[0] < p->placa[0]) {
+			tipo_insercao = 1;
+		} 
+		if (p->placa[0] == placa[0] && p->placa[1] != placa[1]) {
+			tipo_insercao = 2;
+		} 
+		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] != p->placa[2]) {
+			tipo_insercao = 3;
+		}
+		p = p->prox;
+	}
+	return tipo_insercao;
+}
+
 void inserir_lista (LISTAptr lista, char info[100]) {
 	LISTAptr p = lista;
 	LISTAptr nova_lista = inicializa_lista(info, 1);
+	int tipo_insercao = define_tipo_insercao(lista, nova_lista->placa);
 	while (p->prox != NULL) {
 		if (nova_lista->placa[0] < p->prox->placa[0]) { //inserção antes
 			nova_lista->prox = p->prox;
@@ -94,7 +113,8 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 			//imprimir_lista_info(lista);
 			//printf("%s\n", nova_lista->placa);
 			return;
-		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] != p->prox->placa[1]) {
+		}
+		if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] != p->prox->placa[1]) {
 			printf("%s deslizamento 1", nova_lista->placa);
 			if (no_insercao_1(p->prox, nova_lista->placa, 1) == p->prox) {
 				if (nova_lista->placa[1] < p->prox->placa[1]) { //inserção antes
@@ -126,7 +146,8 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 					return;
 				}
 			}
-		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] != p->prox->placa[2]) {
+		}
+		if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] != p->prox->placa[2]) {
 			printf("%s deslizamento 2", nova_lista->placa);
 			if (no_insercao_2(p->prox, nova_lista->placa, 2) == p->prox) {
 				if (nova_lista->placa[2] < p->prox->placa[2]) { //inserção antes
