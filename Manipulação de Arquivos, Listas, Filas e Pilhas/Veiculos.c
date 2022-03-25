@@ -82,6 +82,49 @@ LISTAptr no_insercao_2 (LISTAptr lista, char placa[6], int indice) {
 }
 
 
+LISTAptr no_insercao_3 (LISTAptr lista, char placa[6], int indice) {
+	LISTAptr p = lista;
+	while (p->prox) {
+		if (p->prox->placa[0] == placa[0] && p->prox->placa[1] == placa[1] && p->prox->placa[2] == placa[2] &&  p->placa[indice] <= placa[indice] && p->prox->placa[indice] > placa[indice]) {
+			return p;
+		} 
+		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] == placa[2] &&  placa[indice] > p->placa[indice]) {
+			lista = p;
+		}
+		p = p->prox;
+	}
+	return lista;
+}
+
+
+LISTAptr no_insercao_4 (LISTAptr lista, char placa[6], int indice) {
+	LISTAptr p = lista;
+	while (p->prox) {
+		if (p->prox->placa[0] == placa[0] && p->prox->placa[1] == placa[1] && p->prox->placa[2] == placa[2] && p->prox->placa[3] == placa[3] && p->prox->placa[indice] < placa[indice]) {
+			return p->prox;
+		}
+		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] == placa[2] && p->placa[3] == placa[3] && placa[indice] > p->placa[indice]) {
+			lista = p;
+		}
+		p = p->prox;
+	}
+	return lista;
+}
+
+LISTAptr no_insercao_5 (LISTAptr lista, char placa[6], int indice) {
+	LISTAptr p = lista;
+	while (p->prox) {
+		if (p->prox->placa[0] == placa[0] && p->prox->placa[1] == placa[1] && p->prox->placa[2] == placa[2] && p->prox->placa[3] == placa[3] &&  p->prox->placa[4] == placa[4] &&  p->placa[indice] <= placa[indice] && p->prox->placa[indice] > placa[indice]) {
+			return p;
+		} 
+		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] == placa[2] && p->placa[3] == placa[3] && p->placa[4] == placa[4] && placa[indice] > p->placa[indice]) {
+			lista = p;
+		}
+		p = p->prox;
+	}
+	return lista;
+}
+
 void imprimir_lista_info (LISTAptr lista) {
 	LISTAptr p = lista->prox;
 	while (p) {
@@ -90,28 +133,9 @@ void imprimir_lista_info (LISTAptr lista) {
 	}
 }
 
-int define_tipo_insercao (LISTAptr lista, char placa[6]) {
-	int tipo_insercao = 0;
-	LISTAptr p = lista->prox;
-       	while (p) {
-		if (placa[0] < p->placa[0]) {
-			tipo_insercao = 1;
-		} 
-		if (p->placa[0] == placa[0] && p->placa[1] != placa[1]) {
-			tipo_insercao = 2;
-		} 
-		if (p->placa[0] == placa[0] && p->placa[1] == placa[1] && p->placa[2] != p->placa[2]) {
-			tipo_insercao = 3;
-		}
-		p = p->prox;
-	}
-	return tipo_insercao;
-}
-
 void inserir_lista (LISTAptr lista, char info[100]) {
 	LISTAptr p = lista;
 	LISTAptr nova_lista = inicializa_lista(info, 1);
-	int tipo_insercao = define_tipo_insercao(lista, nova_lista->placa);
 	while (p->prox != NULL) {
 		if (nova_lista->placa[0] < p->prox->placa[0]) { //inserção antes
 			nova_lista->prox = p->prox;
@@ -154,7 +178,6 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 					return;
 				}
 			} else {
-				printf("Aqui");
 				LISTAptr no_insercao = no_insercao_2(p->prox, nova_lista->placa, 2);
 				if (nova_lista->placa[2] < no_insercao->placa[2]) { //inserção antes
 					nova_lista->prox = no_insercao;
@@ -168,7 +191,6 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 			}
 
 		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] != p->prox->placa[3]) {
-			printf("caso 1");
 			if (nova_lista->placa[3] < p->prox->placa[3]) { //inserção antes
 				nova_lista->prox = p->prox;
 				p->prox = nova_lista;
@@ -179,7 +201,6 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 				return;
 			}
 		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] == p->prox->placa[3] && nova_lista->placa[4] != p->prox->placa[4]) {
-			printf("caso 2");
 			if (nova_lista->placa[4] < p->prox->placa[4]) { //inserção antes
 				nova_lista->prox = p->prox;
 				p->prox = nova_lista;
@@ -190,7 +211,6 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 				return;
 			}
 		} else if (nova_lista->placa[0] == p->prox->placa[0] && nova_lista->placa[1] == p->prox->placa[1] && nova_lista->placa[2] == p->prox->placa[2] && nova_lista->placa[3] == p->prox->placa[3] && nova_lista->placa[4] == p->prox->placa[4] && nova_lista->placa[5] != p->prox->placa[5]) {
-			printf("caso 3");
 			if (nova_lista->placa[5] < p->prox->placa[5]) { //inserção antes
 				nova_lista->prox = p->prox;
 				p->prox = nova_lista;
@@ -204,8 +224,6 @@ void inserir_lista (LISTAptr lista, char info[100]) {
 		p = p-> prox;
 	}
 	p->prox = nova_lista;
-	//imprimir_lista_info(lista);
-	//printf("%s\n", nova_lista->placa);
 }
 
 int tamanho_lista (LISTAptr lista) {
@@ -396,10 +414,10 @@ int main () {
 	while (1) {
 		do {
 			printf("\nEscolha uma das opções abaixo: \n\n");
-			printf("1 - Inserção\n");
-			printf("2 - Exclusão\n");
+			printf("1 - Insercao\n");
+			printf("2 - Exclusao\n");
 			printf("3 - Busca\n");
-			printf("4 - Relatório\n");
+			printf("4 - Relatorio\n");
 			printf("5 - Sair\n");
 			scanf("%i", &escolha);
 		} while (escolha < 1 || escolha > 6);
@@ -435,25 +453,30 @@ int main () {
 			LISTAptr nova_lista = excluir(lista, excluidos);
 			lista_inicial = nova_lista;
 		} else if (escolha == 2) {
-			printf("Informe a placa do veículo que deseja excluir:\n");
+			printf("Informe a placa do veiculo que deseja excluir:\n");
 			char placa[6];
 			scanf("%s", placa);
 			lista_excluidos(lista, excluidos, placa);
 			LISTAptr nova_lista = excluir(lista, excluidos);
 			lista_inicial = nova_lista;
 			imprimir_lista_info(lista_inicial);
-			printf("%i", tamanho_lista(nova_lista));
-		} else if (escolha == 3) {
-			if (tipo_estrutura == 0) {
-				do {
-					printf("\nEscolha o tipo de busca: \n\n");
-					printf("1 - Busca por pilha\n");
-					printf("2 - Busca por fila\n");
-					scanf("%i", &tipo_estrutura);
-				} while (tipo_estrutura < 1 || tipo_estrutura > 2);
+			LISTAptr p = lista_inicial->prox;
+			FILE *arquivo = fopen("arquivo.txt", "w");
+			fprintf(arquivo, "%s", "# modelo marca tipo ano km potencia_do_motor combustivel cambio direcao cor portas placa\n\n");
+			while (p) {
+				fprintf(arquivo, "%s", p->info);
+				p = p->prox;
 			}
+			fclose(arquivo);
+		} else if (escolha == 3) {
+			do {
+				printf("\nEscolha o tipo de busca: \n\n");
+				printf("1 - Busca por pilha\n");
+				printf("2 - Busca por fila\n");
+				scanf("%i", &tipo_estrutura);
+			} while (tipo_estrutura < 1 || tipo_estrutura > 2);
 			if (tipo_estrutura == 1) { //Pilha
-				printf("Informe todos os dados do veículo a ser buscado (o tipo escolhido foi pilha - todas as buscas serão armazenadas em uma pilha):\n");
+				printf("Informe todos os dados do veículo a ser buscado:\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 1, pilha_busca, NULL);
@@ -465,7 +488,7 @@ int main () {
 					printf("\nNenhum resultado encontrado\n\n");
 				}
 			} else { //Fila
-				printf("Informe todos os dados do veículo a ser buscado (o tipo escolhido foi fila - todas as buscas serão armazenadas em uma fila):\n");
+				printf("Informe todos os dados do veiculo a ser buscado:\n");
 				char dados_busca[100];
 				scanf(" %99[^\n]", dados_busca);
 				LISTAptr resultado_busca = busca(lista_inicial, dados_busca, 2, NULL, fila_busca);
@@ -479,7 +502,6 @@ int main () {
 			}
 		} else if (escolha == 4) {
 			imprimir_lista_info(lista_inicial);
-			printf("%i\n", tamanho_lista(lista_inicial));
 		}
 	}
 }
