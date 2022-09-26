@@ -48,6 +48,25 @@ LOJAptr insere_no_loja (LOJAptr loja, int primeiro; char tipo[100], char marca[1
 	return NULL;
 }
 
+void imprime_loja (LOJAptr loja, int tipo_impressao) {
+	LOJAptr p = loja;
+	while (p->prox != NULL) {
+		if (tipo_impressao == 1) {
+			printf("%s", p->tipo);
+		} else if (tipo_impressao == 2) {
+			printf("%s", p->marca);
+		} else if (tipo_impressao == 3) {
+			printf("%s", p->modelo);
+		} else if (tipo_impressao == 4) {
+			printf("%d", p->valor);
+		} else if (tipo_impressao == 5) {
+			printf("%i", p->quantidade_estoque);
+		} else if (tipo_impressao == 6) {
+			printf("%d", p->valor_frete);	
+		}
+	}
+}
+
 int main () {
 	printf("Ola, mundo!");
 }
