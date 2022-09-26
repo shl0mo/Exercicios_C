@@ -2,6 +2,8 @@
 # include <stdlib.h>
 # include <time.h>
 # include <string.h>
+# include <conio.h>
+# include <ctype.h>
 
 /* Estruturas de dados */
 // Vetor de lista de produtos da loja
@@ -175,8 +177,8 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 			/* Se houver saldo suficiente, o valor do produto será subtraído do saldodo cliente, a quantidade de itens do produto adicionado ao carrinho será 
 			   subtraído em uma unidade na lista e o produto será adicionado ao carrinho
 			*/
-			// Subtrai o valor do saldo do cliente pelo valor do produto adicionado ao carrinho
-			cliente->saldo = cliente->saldo - p_loja->valor;
+			// Subtrai o valor do saldo do cliente pelo valor do produto adicionado ao carrinho e o valor do frete
+			cliente->saldo = cliente->saldo - p_loja->valor - p_loja->valor_frete;
 			// Subtrai na lista uma unidade do produto adicionado ao carrinho pelo cliente
 			p_loja->quantidade_estoque = p_loja->quantidade_estoque - 1;
 			// Adiciona produto ao carrinho:
@@ -197,18 +199,28 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 		p_loja = p_loja->prox;
 	}
 	// Se o nome de produto inserido não for encontrado, a mensagem abaixo é exibida
-	printf("Produto não encontrado\n\n");
+	printf("\nProduto nao encontrado\n\n");
 }
 
 void imprime_saldo_carrinho(CLIENTEptr cliente) {
 	// Imprime o saldo do cliente
-	printf("SALDO: %f\n", cliente->saldo);
+	printf("\nSALDO: %f\n", cliente->saldo);
 	// Imprime os produtos no carrinho
+	int qtd_produtos = 0;
 	CARRINHOptr p_carrinho = cliente->carrinho;
 	while (p_carrinho) {
-		printf("%s\n", p_carrinho->nome_produto);
+		if (qtd_produtos == 1) printf("PRODUTOS NO CARRINHO:\n");
+		if (qtd_produtos != 0) printf(" - ");
+		if (p_carrinho->nome_produto != NULL) printf("%s\n", p_carrinho->nome_produto);
 		p_carrinho = p_carrinho->prox;
+		qtd_produtos = qtd_produtos + 1;
 	}
+	if (qtd_produtos == 1) {
+		printf("Carrinho vazio\n\n");
+	}
+	int espera_tecla;
+	printf("\nPressione qualquer tecla para continuar\n");
+	_getch();
 }
 
 int main () {
@@ -218,14 +230,14 @@ int main () {
 	CLIENTEptr cliente = inicializa_cliente(saldo);
 	while (1) {
 		int opcao;
-		printf("Escolha uma das opções abaixo:\n");
+		printf("\nEscolha uma das opcoes abaixo:\n\n");
 		printf("1 - Ver produtos\n");
 		printf("2 - Realizar compra\n");
 		printf("3 - Exibir saldo e carrinho\n");
-		printf("4 - Finalizar compra\n");
+		printf("4 - Finalizar compra\n\n");
 		scanf("%i", &opcao);
 		if (opcao == 4) {
-			printf("Novo cliente disponível?\n");
+			printf("Novo cliente disponivel?\n");
 			printf("1 - Sim\n");
 			printf("2 - Nao\n");
 			scanf("%i", &opcao);
@@ -242,7 +254,7 @@ int main () {
 			imprime_loja(loja);
 		} else if (opcao == 2) {
 			char nome_produto[100];
-			printf("Informe o nome do produto a ser adicionado ao carrinho: ");
+			printf("\nInforme o nome do produto a ser adicionado ao carrinho: ");
 			scanf("%s", &nome_produto);
 			adiciona_carrinho(loja, cliente, nome_produto);
 		} else if (opcao == 3) {
