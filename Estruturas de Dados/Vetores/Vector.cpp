@@ -137,9 +137,9 @@ void imprime_loja (LOJAptr loja) {
 		printf("TIPO: %s\n", p->tipo);
 		printf("MARCA: %s\n", p->marca);
 		printf("MODELO: %s\n", p->modelo);
-		printf("VALOR: %f\n", p->valor);
+		printf("VALOR: %.2f\n", p->valor);
 		printf("ESTOQUE: %i\n", p->quantidade_estoque);
-		printf("FRETE: %f\n", p->valor_frete);
+		printf("FRETE: %.2f\n", p->valor_frete);
 		printf("\n\n");
 		p = p->prox;
 		i = i + 1;
@@ -168,14 +168,20 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 	while (p_loja) {
 		// Se o produto for encontrado
 		if (strcmp(p_loja->tipo, nome_produto) == 0) {
+			// Verifica se o produto está disponível
+			if (p_loja->quantidade_estoque < 1) {
+				// Não havendo o produto no estoque, a mensagem abaixo é exibida
+				printf("Nao e possível realizar a compra. Nao ha produto no estoque\n\n");
+				return;
+			}
 			// Verifica se há saldo suficiente para a compra
 			if (cliente->saldo < p_loja->valor) {
 				// Não havendo saldo suficiente, a mensagem abaixo é exibida
-				printf("Não é possível realizar a compra. Saldo insuficiente\n\n");
+				printf("Nao e possível realizar a compra. Saldo insuficiente\n\n");
 				return;
 			}
-			/* Se houver saldo suficiente, o valor do produto será subtraído do saldodo cliente, a quantidade de itens do produto adicionado ao carrinho será 
-			   subtraído em uma unidade na lista e o produto será adicionado ao carrinho
+			/* Se o produto estiver em estoque e houver saldo suficiente, o valor do produto será subtraído do saldodo cliente, a quantidade de itens do produto adicionado 
+			   ao carrinho será subtraído em uma unidade na lista e o produto será adicionado ao carrinho
 			*/
 			// Subtrai o valor do saldo do cliente pelo valor do produto adicionado ao carrinho e o valor do frete
 			cliente->saldo = cliente->saldo - p_loja->valor - p_loja->valor_frete;
@@ -204,7 +210,7 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 
 void imprime_saldo_carrinho(CLIENTEptr cliente) {
 	// Imprime o saldo do cliente
-	printf("\nSALDO: %f\n", cliente->saldo);
+	printf("\nSALDO: %.5f\n", cliente->saldo);
 	// Imprime os produtos no carrinho
 	int qtd_produtos = 0;
 	CARRINHOptr p_carrinho = cliente->carrinho;
