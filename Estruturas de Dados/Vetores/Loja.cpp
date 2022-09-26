@@ -29,7 +29,7 @@ typedef CARRINHO* CARRINHOptr;
 
 // Vetor de informações e carrinho do cliente
 typedef struct Cliente {
-	float saldo;
+	float valor_carrinho;
 	char identificacao[100];
 	char endereco[100];
 	struct Carrinho* carrinho;
@@ -155,10 +155,10 @@ CARRINHOptr inicializa_carrinho() {
 	return novo_carrinho;
 }
 
-CLIENTEptr inicializa_cliente(float saldo) {
-	// Cria um cliente e lhe atribui o valor do saldo passado como parâmetro
+CLIENTEptr inicializa_cliente() {
+	// Cria um cliente
 	CLIENTEptr novo_cliente	= (CLIENTEptr) malloc(sizeof(CLIENTE));
-	novo_cliente->saldo = saldo;
+	novo_cliente->valor_carrinho = 0;
 	apaga_palavra(novo_cliente->endereco);
 	novo_cliente->carrinho = inicializa_carrinho();
 }
@@ -175,17 +175,11 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 				printf("Nao e possível realizar a compra. Nao ha produto no estoque\n\n");
 				return;
 			}
-			// Verifica se há saldo suficiente para a compra
-			if (cliente->saldo < p_loja->valor) {
-				// Não havendo saldo suficiente, a mensagem abaixo é exibida
-				printf("Nao e possível realizar a compra. Saldo insuficiente\n\n");
-				return;
-			}
-			/* Se o produto estiver em estoque e houver saldo suficiente, o valor do produto será subtraído do saldodo cliente, a quantidade de itens do produto adicionado 
+			/* Se o produto estiver em estoque, a soma do produto e do frete será adicionada ao valor do carrinho, a quantidade de itens do produto adicionado 
 			   ao carrinho será subtraído em uma unidade na lista e o produto será adicionado ao carrinho
 			*/
-			// Subtrai o valor do saldo do cliente pelo valor do produto adicionado ao carrinho e o valor do frete
-			cliente->saldo = cliente->saldo - p_loja->valor - p_loja->valor_frete;
+			// Adiciona o valor do produto e do frete ao carrinho do cliente
+			cliente->valor_carrinho = cliente->valor_carrinho + p_loja->valor + p_loja->valor_frete;
 			// Subtrai na lista uma unidade do produto adicionado ao carrinho pelo cliente
 			p_loja->quantidade_estoque = p_loja->quantidade_estoque - 1;
 			// Adiciona produto ao carrinho:
@@ -209,9 +203,9 @@ void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100])
 	printf("\nProduto nao encontrado\n\n");
 }
 
-void imprime_saldo_carrinho(CLIENTEptr cliente) {
-	// Imprime o saldo do cliente
-	printf("\nSALDO: %.5f\n", cliente->saldo);
+void imprime_valor_carrinho(CLIENTEptr cliente) {
+	// Imprime o valor do carrinho
+	printf("\nVALOR: %.5f\n", cliente->valor_carrinho);
 	// Imprime os produtos no carrinho
 	int qtd_produtos = 0;
 	CARRINHOptr p_carrinho = cliente->carrinho;
@@ -232,15 +226,14 @@ void imprime_saldo_carrinho(CLIENTEptr cliente) {
 
 int main () {
 	srand(time(NULL));
-	float saldo = rand() % 600;
 	LOJAptr loja = inicializa_loja();
-	CLIENTEptr cliente = inicializa_cliente(saldo);
+	CLIENTEptr cliente = inicializa_cliente();
 	while (1) {
 		int opcao;
 		printf("\nEscolha uma das opcoes abaixo:\n\n");
 		printf("1 - Ver produtos\n");
 		printf("2 - Realizar compra\n");
-		printf("3 - Exibir saldo e carrinho\n");
+		printf("3 - Exibir carrinho\n");
 		printf("4 - Finalizar compra\n\n");
 		scanf("%i", &opcao);
 		if (opcao == 4) {
@@ -251,17 +244,15 @@ int main () {
 			printf("Informe seu endereco: ");
 			scanf("%s", &endereco);
 			// Adicionar identificação e endereço na struct Cliente
-			/*
-				//
-			*/
+			copia_palavra(cliente->identificacao, identificacao);
+			copia_palavra(cliente->endereco, endereco);
 			printf("\n\nNovo cliente disponivel?\n");
 			printf("1 - Sim\n");
 			printf("2 - Nao\n");
 			scanf("%i", &opcao);
 			if (opcao == 1) {
-				saldo = rand() % 600;
 				loja = inicializa_loja();
-				cliente = inicializa_cliente(saldo);
+				cliente = inicializa_cliente();
 				continue;
 			} else {
 				break;
@@ -275,7 +266,7 @@ int main () {
 			scanf("%s", &nome_produto);
 			adiciona_carrinho(loja, cliente, nome_produto);
 		} else if (opcao == 3) {
-			imprime_saldo_carrinho(cliente);
+			imprime_valor_carrinho(cliente);
 		}
 	}
 }
