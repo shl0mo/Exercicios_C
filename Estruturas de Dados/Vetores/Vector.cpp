@@ -30,7 +30,8 @@ typedef CARRINHO* CARRINHOptr;
 // Vetor de informações e carrinho do cliente
 typedef struct Cliente {
 	float saldo;
-	char endereco[100];	
+	char identificacao[100];
+	char endereco[100];
 	struct Carrinho* carrinho;
 } CLIENTE;
 
@@ -243,7 +244,17 @@ int main () {
 		printf("4 - Finalizar compra\n\n");
 		scanf("%i", &opcao);
 		if (opcao == 4) {
-			printf("Novo cliente disponivel?\n");
+			char identificacao[100];
+			char endereco[100];
+			printf("Informe sua identificacao: ");
+			scanf("%s", &identificacao);
+			printf("Informe seu endereco: ");
+			scanf("%s", &endereco);
+			// Adicionar identificação e endereço na struct Cliente
+			/*
+				//
+			*/
+			printf("\n\nNovo cliente disponivel?\n");
 			printf("1 - Sim\n");
 			printf("2 - Nao\n");
 			scanf("%i", &opcao);
