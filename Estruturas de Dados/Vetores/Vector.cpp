@@ -1,7 +1,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
+# include <string.h>
 
+/* Estruturas de dados */
+// Vetor de lista de produtos da loja
 typedef struct Loja {
 	char tipo[100];
 	char marca[100];
@@ -14,19 +17,25 @@ typedef struct Loja {
 
 typedef LOJA* LOJAptr;
 
-
+// Vetor de lista de produtos no carrinho
 typedef struct Carrinho {
-	float saldo;
-	struct Carrinho* cabeca;
+	char nome_produto[100];
+	struct Carrinho* prox;
 } CARRINHO;
 
-typedef struct No_Carrinho {
-	char nome_produto[100];
-	struct No_Carrinho* prox;
-} NO_CARRINHO;
+typedef CARRINHO* CARRINHOptr;
 
-typedef NO_CARRINHO* NO_CARRINHOptr;
+// Vetor de informações e carrinho do cliente
+typedef struct Cliente {
+	float saldo;
+	char endereco[100];	
+	struct Carrinho* carrinho;
+} CLIENTE;
 
+typedef CLIENTE* CLIENTEptr;
+
+
+/* Funções */
 void apaga_palavra(char palavra[100]) {
 	int i;
 	for (i = 0; i < 100; i++) {
@@ -128,57 +137,61 @@ void imprime_loja (LOJAptr loja) {
 		printf("MODELO: %s\n", p->modelo);
 		printf("VALOR: %f\n", p->valor);
 		printf("ESTOQUE: %i\n", p->quantidade_estoque);
-		printf("FRETE: %d\n", p->valor_frete);
+		printf("FRETE: %f\n", p->valor_frete);
 		printf("\n\n");
 		p = p->prox;
 		i = i + 1;
 	}
 }
 
-CARRINHOptr inicializa_carrinho(float saldo) {
-	// Cria um carrinho e lhe atribui o valor do saldo passado como parâmetro
-	CARRINHOptr novo_carrinho = (CARRINHOptr) malloc(sizeof(CARRINHO));
-	novo_carrinho->saldo = saldo
+CARRINHOptr inicializa_carrinho() {
 	// Cria um nó para a cabeça do vetor do carrinho, com valores nulos para o nome do produto e o ponteiro prox
-	NO_CARRINHOptr novo_no_carrinho = (NO_CARRINHOptr) malloc(sizeof(NO_CARRINHO));
-	apaga_palavra(novo_no_carrinho->nome_produto);
-	novo_no_carrinho->prox = NULL;
-	// Define o nó criado como cabeça do vetor do carrinho
-	novo_carrinho->prox = novo_no_carrinho;
+	CARRINHOptr novo_carrinho = (CARRINHOptr) malloc(sizeof(CARRINHO));
+	apaga_palavra(novo_carrinho->nome_produto);
+	novo_carrinho->prox = NULL;
 	return novo_carrinho;
 }
 
-void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, char nome_produto[100]) {
+CLIENTEptr inicializa_cliente(float saldo) {
+	// Cria um cliente e lhe atribui o valor do saldo passado como parâmetro
+	CLIENTEptr novo_cliente	= (CLIENTEptr) malloc(sizeof(CLIENTE));
+	novo_cliente->saldo = saldo;
+	apaga_palavra(novo_cliente->endereco);
+	novo_cliente->carrinho = inicializa_carrinho();
+}
+
+void adiciona_carrinho(LOJAptr loja, CLIENTEptr cliente, char nome_produto[100]) {
 	// A variável p_loja percorre o vetor de lista de produtos da loja
 	LOJAptr p_loja = loja;
 	while (p_loja) {
 		// Se o produto for encontrado
 		if (strcmp(p_loja->tipo, nome_produto) == 0) {
 			// Verifica se há saldo suficiente para a compra
-			if (carrinho->saldo < p_loja->valor) {
+			if (cliente->saldo < p_loja->valor) {
 				// Não havendo saldo suficiente, a mensagem abaixo é exibida
-				print("Não é possível realizar a compra. Saldo insuficiente\n\n");
+				printf("Não é possível realizar a compra. Saldo insuficiente\n\n");
 				return;
 			}
-			/* Se houver saldo suficiente, o valor do saldo do cliente será subtraído do valor do produto, a quantidade de itens do produto adicionado ao carrinho será 
+			/* Se houver saldo suficiente, o valor do produto será subtraído do saldodo cliente, a quantidade de itens do produto adicionado ao carrinho será 
 			   subtraído em uma unidade na lista e o produto será adicionado ao carrinho
 			*/
 			// Subtrai o valor do saldo do cliente pelo valor do produto adicionado ao carrinho
-			carrinho->saldo = carrinho->saldo - p_loja->valor;
+			cliente->saldo = cliente->saldo - p_loja->valor;
 			// Subtrai na lista uma unidade do produto adicionado ao carrinho pelo cliente
 			p_loja->quantidade_estoque = p_loja->quantidade_estoque - 1;
 			// Adiciona produto ao carrinho:
 			// Caminha até o último elemento da lista
-			CARRINHOptr p_no_carrinho = carrinho->cabeca;
-			while (p_no_carrinho->prox != NULL) {
-				p_no_carrinho = p_no_carrinho->prox;
+			CARRINHOptr p_carrinho = cliente->carrinho;
+			while (p_carrinho->prox != NULL) {
+				p_carrinho = p_carrinho->prox;
 			}
 			// Cria um novo nó para o carrinho no qual será adicionado o produto adquirido
-			NO_CARRINHOptr novo_no_carrinho = (NO_CARRINHOptr) malloc(sizeof(NO_CARRINHO));
+			CARRINHOptr novo_carrinho = (CARRINHOptr) malloc(sizeof(CARRINHO));
 			// Adiciona o produto no novo nó
-			copia_palavra(novo_no_carrinho->produto, nome_produto);
-			novo_no_carrinho->prox = NULL;
-			p_no_carrinho->prox = novo_no_carrinho;
+			copia_palavra(novo_carrinho->nome_produto, nome_produto);
+			// Insere o produto no final do vetor do carrinho
+			novo_carrinho->prox = NULL;
+			p_carrinho->prox = novo_carrinho;
 			return;
 		}
 		p_loja = p_loja->prox;
@@ -187,27 +200,28 @@ void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, char nome_produto[100
 	printf("Produto não encontrado\n\n");
 }
 
-void imprime_carrinho(CARRINHOptr carrinho) {
+void imprime_saldo_carrinho(CLIENTEptr cliente) {
 	// Imprime o saldo do cliente
-	printf("SALDO: %f\n", carrinho->saldo);
+	printf("SALDO: %f\n", cliente->saldo);
 	// Imprime os produtos no carrinho
-	CARRINHOptr p_carrinho = carrinho->cabeca;
+	CARRINHOptr p_carrinho = cliente->carrinho;
 	while (p_carrinho) {
 		printf("%s\n", p_carrinho->nome_produto);
 		p_carrinho = p_carrinho->prox;
 	}
-	
 }
 
 int main () {
+	srand(time(NULL));
+	float saldo = rand() % 600;
 	LOJAptr loja = inicializa_loja();
-	CARRINHOptr carrinho = inicializa_carrinho();
+	CLIENTEptr cliente = inicializa_cliente(saldo);
 	while (1) {
 		int opcao;
 		printf("Escolha uma das opções abaixo:\n");
 		printf("1 - Ver produtos\n");
 		printf("2 - Realizar compra\n");
-		printf("3 - Exibir carrinho\n");
+		printf("3 - Exibir saldo e carrinho\n");
 		printf("4 - Finalizar compra\n");
 		scanf("%i", &opcao);
 		if (opcao == 4) {
@@ -216,8 +230,10 @@ int main () {
 			printf("2 - Nao\n");
 			scanf("%i", &opcao);
 			if (opcao == 1) {
+				saldo = rand() % 600;
 				loja = inicializa_loja();
-				carrinho = inicializa_carrinho();
+				cliente = inicializa_cliente(saldo);
+				continue;
 			} else {
 				break;
 			}
@@ -226,10 +242,11 @@ int main () {
 			imprime_loja(loja);
 		} else if (opcao == 2) {
 			char nome_produto[100];
-			printf("Informe o nome do produto a ser adicionado ao carrinho");
+			printf("Informe o nome do produto a ser adicionado ao carrinho: ");
 			scanf("%s", &nome_produto);
-			adiciona_carrinho(loja, carrinho, nome_produto);
-			
+			adiciona_carrinho(loja, cliente, nome_produto);
+		} else if (opcao == 3) {
+			imprime_saldo_carrinho(cliente);
 		}
 	}
 }
