@@ -148,7 +148,7 @@ CARRINHOptr inicializa_carrinho(float saldo) {
 	return novo_carrinho;
 }
 
-void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, int primeiro, char nome_produto[100]) {
+void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, char nome_produto[100]) {
 	// A variável p_loja percorre o vetor de lista de produtos da loja
 	LOJAptr p_loja = loja;
 	while (p_loja) {
@@ -157,7 +157,7 @@ void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, int primeiro, char no
 			// Verifica se há saldo suficiente para a compra
 			if (carrinho->saldo < p_loja->valor) {
 				// Não havendo saldo suficiente, a mensagem abaixo é exibida
-				print("Não é possível realizar a compra. Saldo insuficiente");
+				print("Não é possível realizar a compra. Saldo insuficiente\n\n");
 				return;
 			}
 			/* Se houver saldo suficiente, o valor do saldo do cliente será subtraído do valor do produto, a quantidade de itens do produto adicionado ao carrinho será 
@@ -184,7 +184,19 @@ void adiciona_carrinho(LOJAptr loja, CARRINHOptr carrinho, int primeiro, char no
 		p_loja = p_loja->prox;
 	}
 	// Se o nome de produto inserido não for encontrado, a mensagem abaixo é exibida
-	printf("Produto não encontrado");
+	printf("Produto não encontrado\n\n");
+}
+
+void imprime_carrinho(CARRINHOptr carrinho) {
+	// Imprime o saldo do cliente
+	printf("SALDO: %f\n", carrinho->saldo);
+	// Imprime os produtos no carrinho
+	CARRINHOptr p_carrinho = carrinho->cabeca;
+	while (p_carrinho) {
+		printf("%s\n", p_carrinho->nome_produto);
+		p_carrinho = p_carrinho->prox;
+	}
+	
 }
 
 int main () {
@@ -215,8 +227,8 @@ int main () {
 		} else if (opcao == 2) {
 			char nome_produto[100];
 			printf("Informe o nome do produto a ser adicionado ao carrinho");
-			scanf("%s", nome_produto);
-			adiciona_carrinho(lista, carrinho, int primeiro, char nome_produto[100])
+			scanf("%s", &nome_produto);
+			adiciona_carrinho(loja, carrinho, nome_produto);
 			
 		}
 	}
